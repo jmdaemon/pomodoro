@@ -4,6 +4,10 @@
 #include <unistd.h>
 #include <pthread.h>
 
+// TODO:
+// Implement progress bar & second by second timer
+// Create optional configs and allow users to override timer format
+
 typedef struct Timer {
   int *shortbreak;
   int *longbreak;
@@ -18,14 +22,14 @@ void *stopwatch(void *vargp) {
   while (*timer->interval_count <= 4) {
     if (*timer->interval_count == 4) {
       sleep(*(timer->longbreak));
-      (*(timer->interval_count)) = 0;
       printf("Pomodoro #%d\n", *timer->interval_count);
+      (*(timer->interval_count)) = 0;
       break;
-    } else
+    } else {
       sleep(*timer->shortbreak);
-
+      printf("Pomodoro #%d\n", *timer->interval_count);
+    }
     (*timer->interval_count)++;
-    printf("Pomodoro #%d\n", *timer->interval_count);
 
     // Pause the program and wait for the user to continue
     if (*timer->interval_count > 0) {
@@ -42,9 +46,9 @@ int main() {
   Timer *timer = malloc(sizeof(Timer));
   int shortbreak = to_secs(10);
   int longbreak = to_secs(30);
-  /*int shortbreak = 0;*/
+  /*int shortbreak = 1;*/
   /*int longbreak = 1;*/
-  int interval_count = 0;
+  int interval_count = 1;
 
   timer->shortbreak = &shortbreak;
   timer->longbreak = &longbreak;
