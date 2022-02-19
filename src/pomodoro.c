@@ -13,12 +13,9 @@ typedef struct Timer {
 int to_secs(int mins) { return mins * 60; }
 
 void *threadfn(void *vargp) {
-  /*Timer *timer = malloc(sizeof(vargp));*/
   Timer *timer = vargp;
-  /*printf("%d %d\n", *timer->shortbreak, *timer->longbreak);*/
 
   while (*timer->interval_count <= 4) {
-    /*printf("%d %d\n", *timer->shortbreak, *timer->longbreak);*/
     if (*timer->interval_count == 4) {
       sleep(*(timer->longbreak));
       (*(timer->interval_count)) = 0;
@@ -37,10 +34,6 @@ void *threadfn(void *vargp) {
 
 int main() {
   Timer *timer = malloc(sizeof(Timer));
-  /*Timer tstruct = { };*/
-  /*Timer * timer = &tstruct;*/
-  /**(timer->shortbreak) = to_secs(10);*/
-  /**(timer->longbreak) = to_secs(30);*/
   int shortbreak = to_secs(10);
   int longbreak = to_secs(30);
   int interval_count = 0;
@@ -49,20 +42,10 @@ int main() {
   timer->longbreak = &longbreak;
   timer->interval_count = &interval_count;
 
-  /*timer->shortbreak = &shortbreak;*/
-  /*timer->longbreak = &longbreak;*/
-  /**timer->shortbreak = shortbreak;*/
-  /**timer->longbreak = longbreak;*/
-
-  /*printf("%d %d\n", *timer->shortbreak, *timer->longbreak);*/
-
   pthread_t thread_id;
   printf("Before Thread\n");
   pthread_create(&thread_id, NULL, threadfn, timer);
-  /*if (pthread_create(&thread_id, NULL, threadfn, timer))*/
-    /*free(timer);*/
   pthread_join(thread_id, NULL);
   printf("After Thread\n");
-  /*free(timer);*/
   exit(0);
 }
