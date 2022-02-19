@@ -1,8 +1,8 @@
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 
 typedef struct Timer {
   int *shortbreak;
@@ -26,6 +26,12 @@ void *stopwatch(void *vargp) {
 
     (*timer->interval_count)++;
     printf("Pomodoro #%d\n", *timer->interval_count);
+
+    // Pause the program and wait for the user to continue
+    if (*timer->interval_count > 0) {
+      printf("Hit any key to resume the timer ");
+      char c = getchar();
+    }
   }
   printf("Pomodoro Interval Complete\n");
   free(timer);
@@ -36,6 +42,8 @@ int main() {
   Timer *timer = malloc(sizeof(Timer));
   int shortbreak = to_secs(10);
   int longbreak = to_secs(30);
+  /*int shortbreak = 0;*/
+  /*int longbreak = 1;*/
   int interval_count = 0;
 
   timer->shortbreak = &shortbreak;
@@ -43,9 +51,8 @@ int main() {
   timer->interval_count = &interval_count;
 
   pthread_t thread_id;
-  printf("Before Thread\n");
+  printf("Starting Pomodoro Timer\n");
   pthread_create(&thread_id, NULL, stopwatch, timer);
   pthread_join(thread_id, NULL);
-  printf("After Thread\n");
   exit(0);
 }
