@@ -12,7 +12,7 @@ typedef struct Timer {
 
 int to_secs(int mins) { return mins * 60; }
 
-void *threadfn(void *vargp) {
+void *stopwatch(void *vargp) {
   Timer *timer = vargp;
 
   while (*timer->interval_count <= 4) {
@@ -44,7 +44,7 @@ int main() {
 
   pthread_t thread_id;
   printf("Before Thread\n");
-  pthread_create(&thread_id, NULL, threadfn, timer);
+  pthread_create(&thread_id, NULL, stopwatch, timer);
   pthread_join(thread_id, NULL);
   printf("After Thread\n");
   exit(0);
