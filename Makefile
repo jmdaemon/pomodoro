@@ -17,7 +17,7 @@ SUBPROJECTS = subprojects
 #
 # Project files
 #
-SRCS = pomodoro.c progressbar.c 
+SRCS = pomodoro.c progressbar.c timer.c
 OBJS = $(SRCS:.c=.o)
 LIB_OBJS = $(SUBPROJECTS)/tomlc99/toml.o 
 EXE  = pomodoro
