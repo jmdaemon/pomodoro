@@ -1,21 +1,7 @@
 #
 # Compiler flags
 #
-#CFLAGS = -Wall -Wextra -Iinclude
 CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
-#LDFLAGS = -Lsubprojects/tomlc99/lib -llibtoml.a -llibtoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml.a -ltoml.so.1.0
-#LDFLAGS = -lsubprojects/tomlc99/lib/libtoml.a -lsubprojects/tomlc99/lib/libtoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/ -lsubprojects/tomlc99/libtoml.a -lsubprojects/tomlc99/libtoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/lib/libtoml.a -Lsubprojects/tomlc99/libtoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/ -llibtoml.a -llibtoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/ -ltoml.a -ltoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/ -ltoml.a -ltoml.so
-#LDFLAGS = -lsubprojects/tomlc99/lib/libtoml.a -lsubprojects/tomlc99/lib/libtoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/lib -llibtoml.a -llibtoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml.a -ltoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/lib/libtoml.a -Lsubprojects/tomlc99/lib/libtoml.so.1.0
-#LDFLAGS = -Lsubprojects/tomlc99/lib/libtoml.a -ltoml -Lsubprojects/tomlc99/lib/libtoml.so.1.0
 LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
 
 #

@@ -4,9 +4,6 @@
 
 #include <errno.h>
 
-// TODO:
-// Create optional configs and allow users to override timer format
-
 static void error(const char* msg, const char* msg1) {
     fprintf(stderr, "ERROR: %s%s\n", msg, msg1?msg1:"");
     exit(1);
@@ -48,7 +45,7 @@ void *stopwatch(void *vargp) {
 
     /* Work for some time */
     time_t work_period = workfor(timer, timer->interval_count - 1);
-    /*printf("Working for %ld\n", work_period);*/
+    printf("Working for %ld\n", work_period);
 
     /* Show a progress bar */
     show_progress(timer, work_period);
@@ -92,7 +89,6 @@ Timer* init_timer(int sbreak, int lbreak) {
 
   const int intervals[4] = {
     to_secs(20), to_secs(20), to_secs(20), to_secs(20),
-    /*10, 10, 10, 10,*/
   };
 
 
@@ -108,9 +104,6 @@ toml_table_t* read_config(char* configfp) {
     // Read and parse toml config file
     file_contents = fopen(configfp, "r");
     if (!file_contents) {
-      /*char* error_msg;*/
-      /*sprintf(error_msg, "Cannot open %s - ", configfp);*/
-      /*error(error_msg, strerror(errno));*/
       error("Cannot open config.toml - ", strerror(errno));
     }
     toml_table_t* conf = toml_parse_file(file_contents, errbuf, sizeof(errbuf));
@@ -128,11 +121,9 @@ int set_period(toml_datum_t units, int value) {
 
 int main() {
   Timer *timer = init_timer(to_secs(10), to_secs(30));
-  /*Timer *timer = init_timer(1, 1);*/
 
   // Config overrides timer settings
   char* configfp = getenv("POMODORO_CONFIG");
-  /*if (configfp != NULL) {*/
   if (configfp) {
     printf("Using custom config file: %s\n", configfp);
     toml_table_t* config = read_config(configfp);
@@ -152,27 +143,17 @@ int main() {
     }
 
     // Set custom intervals for breaks
-    /*toml_datum_t lbreak = toml_string_in(conf, "longbreak");*/
     toml_datum_t lbreak = toml_int_in(conf, "longbreak");
     if (lbreak.ok) {
       timer->longbreak = set_period(units, lbreak.u.i);
-      /*timer->longbreak = set_period(units, lbreak.u.b);*/
       printf("Setting longbreak to: %ld\n", lbreak.u.i);
-      /*printf("Setting longbreak to: %d\n", lbreak.u.b);*/
-      /*free(lbreak.u.i);*/
     }
-      /*timer->longbreak = (strcmp(units.u.s, "minutes")) ? lbreak.u.i * 60: lbreak.u.i;*/
 
-    /*toml_datum_t sbreak = toml_string_in(conf, "sbreak");*/
     toml_datum_t sbreak = toml_int_in(conf, "shortbreak");
     if (sbreak.ok) {
-      /*timer->shortbreak = set_period(units, sbreak.u.i);*/
-      timer->shortbreak = set_period(units, sbreak.u.b);
-      /*printf("Setting shortbreak to: %ld\n", sbreak.u.i);*/
-      printf("Setting shortbreak to: %ld\n", sbreak.u.b);
-      /*free(sbreak.u.i);*/
+      timer->shortbreak = set_period(units, sbreak.u.i);
+      printf("Setting shortbreak to: %ld\n", sbreak.u.i);
     }
-      /*timer->longbreak = (strcmp(units.u.s, "minutes")) ? sbreak.u.i * 60 : sbreak.u.i;*/
 
     // Set custom work interval periods
     toml_array_t* intervals = toml_array_in(conf, "intervals");
@@ -184,19 +165,17 @@ int main() {
     for (int i = 0; ; i++) {
       toml_datum_t intval = toml_int_at(intervals, i);
       if (!intval.ok) break;
-      /*intvals[i] = (int)intval.u.i;*/
       int period = set_period(units, (int)intval.u.i);
       intvals[i] = period;
-      /*printf("Setting interval[%d] to: %ld\n", i, intval.u.i);*/
       printf("Setting interval[%d] to: %d\n", i, period);
     }
     
     // Set timer intervals
     for (int i = 0; i < 4; i++)
       (timer->workintervals)[i] = intvals[i];
+
     free(units.u.s);
     toml_free(conf);
-    /*toml_free(config);*/
   }
 
   pthread_t thread_id;
