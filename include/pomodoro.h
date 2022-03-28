@@ -14,6 +14,7 @@ typedef struct Timer {
   int longbreak;
   int interval_count;
   ProgressBar *pb;
+  int workintervals[4];
 } Timer;
 
 int to_secs(int mins);

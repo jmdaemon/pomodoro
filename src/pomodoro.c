@@ -6,21 +6,30 @@
 
 int to_secs(int mins) { return mins * 60; }
 
+int workfor(Timer *timer, int interval) {
+  return ((timer->workintervals)[interval]);
+}
+
 void *stopwatch(void *vargp) {
   Timer *timer = vargp;
 
   while (timer->interval_count <= 4) {
+    /* Start our pomodoro */
+    printf("Pomodoro #%d\n", timer->interval_count);
+
     /* Work for some time */
+    /*printf("Working for %d\n", workfor(timer, timer->interval_count - 1));*/
+    sleep(workfor(timer, timer->interval_count - 1));
 
     /* Take a break */
     /* If we're on our final pomodoro */
     if (timer->interval_count == 4) {
-      printf("Pomodoro #%d\n", timer->interval_count);
+      printf("Taking a longer break for %d minutes\n", (timer->longbreak)/60);
       sleep(timer->longbreak); /* Take a longer break */
       timer->interval_count = 0;
       break; /* And end our pomodoro */
     } else {
-      printf("Pomodoro #%d\n", timer->interval_count);
+      printf("Taking a short break for %d minutes\n", (timer->shortbreak)/60);
       sleep(timer->shortbreak); /* Take a shorter break */
     }
     timer->interval_count++;
@@ -45,6 +54,14 @@ Timer* init_timer(int sbreak, int lbreak) {
   timer->shortbreak = shortbreak;
   timer->longbreak = longbreak;
   timer->interval_count = interval_count;
+
+  const int intervals[4] = {
+    to_secs(20), to_secs(20), to_secs(20), to_secs(20),
+    /*4, 4, 4, 4,*/
+  };
+
+  for (int i = 0; i < 4; i++)
+    (timer->workintervals)[i] = intervals[i];
   return timer;
 }
 
