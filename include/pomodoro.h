@@ -17,10 +17,12 @@ typedef struct Timer {
   int workintervals[4];
 } Timer;
 
+int main();
 int to_secs(int mins);
 void *stopwatch(void *vargp);
-int main();
 
+int workfor(Timer *timer, int interval);
+void show_progress(Timer *timer, int work_period);
 Timer* init_timer(int sbreak, int lbreak);
 
 #endif

@@ -22,11 +22,8 @@ void show_progress(Timer *timer, int work_period) {
         cur = get_time();
 
         draw_progress_bar (&timer->pb, cur, end);
-        /*unsigned long nProgress = ( ((unsigned long long)i) * timer->pb->maxlength) / work_period;*/
         unsigned long nProgress = ( ((unsigned long long)i) * timer->pb.maxlength) / work_period;
-        /*if (nProgress != timer->pb->curlength) {*/
         if (nProgress != timer->pb.curlength) {
-            /*timer->pb->curlength = nProgress;*/
             timer->pb.curlength = nProgress;
             draw_progress_bar(&timer->pb, cur, end);
         }
@@ -83,7 +80,6 @@ Timer* init_timer(int sbreak, int lbreak) {
   timer->shortbreak = shortbreak;
   timer->longbreak = longbreak;
   timer->interval_count = interval_count;
-  /*timer->pb = &pb;*/
   timer->pb = pb;
 
   const int intervals[4] = {
