@@ -32,17 +32,21 @@ void *stopwatch(void *vargp) {
   return NULL;
 }
 
-int main() {
+Timer* init_timer(int sbreak, int lbreak) {
   Timer *timer = malloc(sizeof(Timer));
-  int shortbreak = to_secs(10);
-  int longbreak = to_secs(30);
-  /*int shortbreak = 1;*/
-  /*int longbreak = 1;*/
+  int shortbreak = sbreak;
+  int longbreak = lbreak;
   int interval_count = 1;
 
   timer->shortbreak = &shortbreak;
   timer->longbreak = &longbreak;
   timer->interval_count = &interval_count;
+  return timer;
+}
+
+int main() {
+  Timer *timer = init_timer(to_secs(10), to_secs(30));
+  /*Timer *timer = init_timer(1, 1);*/
 
   pthread_t thread_id;
   printf("Starting Pomodoro Timer\n");

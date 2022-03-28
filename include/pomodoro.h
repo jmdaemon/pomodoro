@@ -20,4 +20,6 @@ int to_secs(int mins);
 void *stopwatch(void *vargp);
 int main();
 
+Timer* init_timer(int sbreak, int lbreak);
+
 #endif
