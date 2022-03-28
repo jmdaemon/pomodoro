@@ -4,15 +4,11 @@
 #include <unistd.h>
 #include <pthread.h>
 
+#include "pomodoro.h"
+
 // TODO:
 // Implement progress bar & second by second timer
 // Create optional configs and allow users to override timer format
-
-typedef struct Timer {
-  int *shortbreak;
-  int *longbreak;
-  int *interval_count;
-} Timer;
 
 int to_secs(int mins) { return mins * 60; }
 
