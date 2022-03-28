@@ -1,6 +1,6 @@
 #pragma once
-#ifndef POMODORO_H
-#define POMODORO_H
+#ifndef PROGRESSBAR_H
+#define PROGRESSBAR_H
 
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +10,7 @@
 #include <time.h>
 
 #define PDT (+5)
+
 struct ProgressBar {
     unsigned long maxlength;
     unsigned long curlength;
