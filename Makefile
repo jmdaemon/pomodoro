@@ -16,7 +16,7 @@ BIN_PREFIX = bin
 #
 # Project files
 #
-SRCS = pomodoro.c
+SRCS = pomodoro.c progressbar.c
 OBJS = $(SRCS:.c=.o)
 EXE  = pomodoro
 
