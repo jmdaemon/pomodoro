@@ -11,7 +11,7 @@
 
 #define PDT (+5)
 
-struct ProgressBar {
+typedef struct ProgressBar {
     unsigned long maxlength;
     unsigned long curlength;
 
@@ -19,7 +19,7 @@ struct ProgressBar {
     char emptychar;
     char leftmargin;
     char rightmargin;
-} typedef ProgressBar;
+} ProgressBar;
 
 ProgressBar init_progress_bar(unsigned long maxlength, char left, char right, char fill, char empty);
 void draw_progress_bar(ProgressBar* p, time_t time_beg, time_t time_end);
