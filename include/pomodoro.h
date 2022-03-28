@@ -10,9 +10,9 @@
 #include "progressbar.h"
 
 typedef struct Timer {
-  int *shortbreak;
-  int *longbreak;
-  int *interval_count;
+  int shortbreak;
+  int longbreak;
+  int interval_count;
   ProgressBar *pb;
 } Timer;
 
