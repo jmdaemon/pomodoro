@@ -16,19 +16,19 @@ void *stopwatch(void *vargp) {
     /* If we're on our final pomodoro */
     if (timer->interval_count == 4) {
       printf("Pomodoro #%d\n", timer->interval_count);
-      sleep((timer->longbreak)); /* Take a longer break */
-      ((timer->interval_count)) = 0;
+      sleep(timer->longbreak); /* Take a longer break */
+      timer->interval_count = 0;
       break; /* And end our pomodoro */
     } else {
       printf("Pomodoro #%d\n", timer->interval_count);
       sleep(timer->shortbreak); /* Take a shorter break */
     }
-    (timer->interval_count)++;
+    timer->interval_count++;
 
     /* Pause the program and wait for the user to continue */
     if (timer->interval_count > 0) {
       printf("Hit any key to resume the timer ");
-      char c = getchar();
+      getchar();
     }
   }
   printf("Pomodoro Interval Complete\n");
