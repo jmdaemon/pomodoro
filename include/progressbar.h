@@ -19,6 +19,9 @@ typedef struct ProgressBar {
     char emptychar;
     char leftmargin;
     char rightmargin;
+
+    time_t cur;
+    time_t end;
 } ProgressBar;
 
 ProgressBar init_progress_bar(unsigned long maxlength, char left, char right, char fill, char empty);

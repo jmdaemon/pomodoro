@@ -35,7 +35,7 @@ void draw_progress_bar (ProgressBar* p, time_t time_beg, time_t time_end) {
     printf("\r");
 
     /** Print the current timestamp and the end timestamp */
-    printf("%s / %s", timestamp(time_beg), timestamp(time_end));
+    printf("%s / %s ", timestamp(time_beg), timestamp(time_end));
 
     /** Print the left margin char. */
     printf("%c", p->leftmargin);

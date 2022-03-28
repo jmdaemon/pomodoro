@@ -13,7 +13,7 @@ typedef struct Timer {
   int shortbreak;
   int longbreak;
   int interval_count;
-  ProgressBar *pb;
+  ProgressBar pb;
   int workintervals[4];
 } Timer;
 

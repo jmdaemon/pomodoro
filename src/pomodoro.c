@@ -1,13 +1,37 @@
 #include "pomodoro.h"
+#include "progressbar.h"
 
 // TODO:
-// Implement progress bar & second by second timer
 // Create optional configs and allow users to override timer format
 
 int to_secs(int mins) { return mins * 60; }
 
 int workfor(Timer *timer, int interval) {
   return ((timer->workintervals)[interval]);
+}
+
+void show_progress(Timer *timer, int work_period) {
+    /* Get the current time */
+    time_t end = get_time();
+    end += work_period;
+    time_t cur = get_time();
+
+    for (int i = 1; i <= work_period; i++) {
+        sleep(1);
+        /* Update the current time */
+        cur = get_time();
+
+        draw_progress_bar (&timer->pb, cur, end);
+        /*unsigned long nProgress = ( ((unsigned long long)i) * timer->pb->maxlength) / work_period;*/
+        unsigned long nProgress = ( ((unsigned long long)i) * timer->pb.maxlength) / work_period;
+        /*if (nProgress != timer->pb->curlength) {*/
+        if (nProgress != timer->pb.curlength) {
+            /*timer->pb->curlength = nProgress;*/
+            timer->pb.curlength = nProgress;
+            draw_progress_bar(&timer->pb, cur, end);
+        }
+    }
+    puts("");
 }
 
 void *stopwatch(void *vargp) {
@@ -18,8 +42,11 @@ void *stopwatch(void *vargp) {
     printf("Pomodoro #%d\n", timer->interval_count);
 
     /* Work for some time */
-    /*printf("Working for %d\n", workfor(timer, timer->interval_count - 1));*/
-    sleep(workfor(timer, timer->interval_count - 1));
+    time_t work_period = workfor(timer, timer->interval_count - 1);
+    printf("Working for %ld\n", work_period);
+
+    /* Show a progress bar */
+    show_progress(timer, work_period);
 
     /* Take a break */
     /* If we're on our final pomodoro */
@@ -51,13 +78,17 @@ Timer* init_timer(int sbreak, int lbreak) {
   int longbreak = lbreak;
   int interval_count = 1;
 
+  ProgressBar pb = init_progress_bar(50, '[', ']', '#', '.');
+
   timer->shortbreak = shortbreak;
   timer->longbreak = longbreak;
   timer->interval_count = interval_count;
+  /*timer->pb = &pb;*/
+  timer->pb = pb;
 
   const int intervals[4] = {
     to_secs(20), to_secs(20), to_secs(20), to_secs(20),
-    /*4, 4, 4, 4,*/
+    /*10, 10, 10, 10,*/
   };
 
   for (int i = 0; i < 4; i++)
