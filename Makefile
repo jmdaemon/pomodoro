@@ -52,9 +52,7 @@ endif
 
 # Library build settings
 ifeq ($(filter lib,$(MAKECMDGOALS)),lib)
-#TARGET=lib
 TARGET_FLAGS= $(CFLAGS_LIB) $(LDFLAGS_LIB) $(LDFLAGS)
-#TARGET_FLAGS= $(LDFLAGS_LIB) $(LDFLAGS)
 BUILD_LIB = $(BUILD_DIR)/$(LIB_PREFIX)/$(LIB)
 endif
 
@@ -64,20 +62,21 @@ BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
 
 # Rules
 
-# Library
-lib: prep-library $(BUILD_LIB)
-
-$(BUILD_LIB): ${BUILD_LIB} $(BUILD_OBJS)
-	$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD_LIB) $^
-
+## Install/Uninstall
 install: release $(BUILD_EXEC)
 	install $(BUILD_EXEC) $(DESTDIR)$(PREFIX)/bin/$(EXE)
-
-#install -d $(DESTDIR)$(PREFIX)/bin/ $(BUILD_EXEC)
 
 uninstall: release $(BUILD_EXEC)
 	rm -f $(DESTDIR)$(PREFIX)/bin/$(EXE)
 
+# Library
+lib: prep-library $(BUILD_LIB)
+
+$(BUILD_LIB): ${BUILD_LIB} $(BUILD_OBJS)
+	$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $@ $^
+	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD_LIB) $^
+
+# Debug/Release builds
 debug release: prep $(BUILD_EXEC)
 
 $(BUILD_EXEC): $(BUILD_OBJS)
@@ -93,8 +92,6 @@ prep:
 
 prep-library:
 	@mkdir -p $(BUILD_DIR)/$(LIB_PREFIX)
-	#@mkdir -p $(BUILD_DIR)
-	#@mkdir -p $(BUILD_DIR)/$(LIB_PREFIX)
 
 remake: clean all
 
