@@ -53,8 +53,8 @@ endif
 # Library build settings
 ifeq ($(filter lib,$(MAKECMDGOALS)),lib)
 #TARGET=lib
-#TARGET_FLAGS= $(CFLAGS_LIB) $(LDFLAGS_LIB) $(LDFLAGS)
-TARGET_FLAGS= $(LDFLAGS_LIB) $(LDFLAGS)
+TARGET_FLAGS= $(CFLAGS_LIB) $(LDFLAGS_LIB) $(LDFLAGS)
+#TARGET_FLAGS= $(LDFLAGS_LIB) $(LDFLAGS)
 BUILD_LIB = $(BUILD_DIR)/$(LIB_PREFIX)/$(LIB)
 endif
 
@@ -62,43 +62,12 @@ BUILD_DIR = $(BUILD_PREFIX)/$(TARGET)
 BUILD_EXEC= $(BUILD_DIR)/$(BIN_PREFIX)/$(EXE)
 BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
 
-#lib: $(OBJS)
-	#$(CC) ${LDFLAGS} ${LDFLAGS_LIB} -o $@ $^
-
-#$(LIB): release $(OBJS)
-#$(LIB): $(BUILD_EXEC)
-#$(LIB): $(OBJS)
-#$(LIB): $(OBJS)
-	#$(CC) ${LDFLAGS} ${LDFLAGS_LIB} ${CFLAGS_LIB} -o $@ $^
-
 # Rules
 
 # Library
-#lib: build/release/lib/${LIB}
-#lib: $(BUILD_DIR)/${LIB} $(BUILD_EXEC)
-#lib: $(BUILD_DIR)/${LIB}
-#lib: $(BUILD_DIR)/${LIB} $(LIB_EXEC)
-#lib: $(LIB_EXEC)
-#lib: prep-library $(LIB_EXEC)
 lib: prep-library $(BUILD_LIB)
-	#mkdir -p $(BUILD_DIR)/${LIB}
 
-#$(LIB): $(OBJS)
-#$(LIB): $(BUILD_DIR)/${LIB}
-#$(LIB_EXEC): $(BUILD_OBJS) $(BUILD_DIR)/${LIB}
-#$(LIB_EXEC): $(BUILD_DIR)/$(LIB_PREFIX)/${LIB}
-#$(LIB_EXEC): $(BUILD_DIR)/$(LIB_PREFIX)/${LIB}
-#$(LIB_EXEC): $(BUILD_DIR)/${LIB}
-#$(LIB_EXEC): ${LIB}
-#$(LIB_EXEC): $(BUILD_DIR)/$(LIB_PREFIX)/${LIB}
-#$(LIB_EXEC): $(BUILD_LIB)
-#$(BUILD_LIB): $(BUILD_LIB)
-$(BUILD_LIB): ${BUILD_LIB}
-#$(LIB_EXEC): $(BUILD_DIR)/${LIB}
-	#$(CC) ${LDFLAGS} ${LDFLAGS_LIB} ${CFLAGS_LIB} -o $@ $^
-	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -g -o $@ $^
-	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $@ $^
-	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD) $^
+$(BUILD_LIB): ${BUILD_LIB} $(BUILD_OBJS)
 	$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD_LIB) $^
 
 install: release $(BUILD_EXEC)
