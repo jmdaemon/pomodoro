@@ -72,9 +72,8 @@ uninstall: release $(BUILD_EXEC)
 # Library
 lib: prep-library $(BUILD_LIB)
 
-$(BUILD_LIB): ${BUILD_LIB} $(BUILD_OBJS)
+$(BUILD_LIB): $(BUILD_OBJS) 
 	$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $@ $^
-	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD_LIB) $^
 
 # Debug/Release builds
 debug release: prep $(BUILD_EXEC)
