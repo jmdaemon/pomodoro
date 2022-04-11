@@ -2,6 +2,11 @@
 #ifndef TIMER_H
 #define TIMER_H
 
+/* Support header include for C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,4 +29,8 @@ int workfor(Timer *timer, int interval);
 void show_progress(Timer *timer, int work_period);
 Timer* init_timer(int sbreak, int lbreak);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // TIMER_H

@@ -2,5 +2,15 @@
 #ifndef POMODORO_H
 #define POMODORO_H
 
-int main();
+/* Support header include for C++ */
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+int main();
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // POMODORO_H

@@ -2,6 +2,11 @@
 #ifndef PROGRESSBAR_H
 #define PROGRESSBAR_H
 
+/* Support header include for C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -29,4 +34,8 @@ void draw_progress_bar(ProgressBar* p, time_t time_beg, time_t time_end);
 time_t get_time();
 char* timestamp(time_t rawtime);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // PROGRESSBAR_H
