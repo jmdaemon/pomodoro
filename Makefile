@@ -1,8 +1,21 @@
 #
 # Compiler flags
 #
-CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
-LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
+GLOBAL_CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
+GLOBAL_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
+
+LIB_CFLAGS = -fPIC
+LIB_LDFLAGS = -shared
+
+REL_CFLAGS = -O3 -DNDEBUG
+DBG_CFLAGS = -g -O0 -DDEBUG 
+
+SUBPROJECT_CFLAGS = -Isubprojects/tomlc99/include
+SUBPROJECT_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
+
+# Keep current build compatibility for now
+CFLAGS_LIB = $(LIB_CFLAGS)
+LDFLAGS_LIB = $(LIB_LDFLAGS)
 
 #
 # Prefixes
@@ -29,8 +42,6 @@ EXE  = pomodoro
 # Library
 #
 # Builds the project as a library
-CFLAGS_LIB = -fPIC -g
-LDFLAGS_LIB = -shared
 LIB_SRCS = $(SRCS)
 LIB_OBJS = $(SRCS:.c=.o)
 LIB = libpomodoro.so
