@@ -67,23 +67,10 @@ SUBPROJECTS = subprojects
 PREFIX_BIN = bin
 PREFIX_LIB = lib
 
-
 #
-# Prefixes
-#
-# These are used to generate the build structure:
-# build/{debug,release}/{bin, lib, subprojects}
-#PATHB = build
-#PATHS = src
-BIN_PREFIX = bin
-SUBPROJECTS = subprojects
-
-#
-# Project files
+# Binary Sources
 #
 # Build the project as an executable binary
-#
-# Note: $(SRCS:.c=.o) replaces all *.c sources with *.o extensions
 SRCS = pomodoro.c progressbar.c timer.c
 OBJS = $(SRCS:.c=.o)
 LIB_OBJS = $(SUBPROJECTS)/tomlc99/toml.o 
@@ -138,7 +125,7 @@ endif
 # BUILD_OBJS: The object files of the binary target
 
 BUILD_DIR = $(PATHB)/$(TARGET)
-BUILD_EXEC= $(BUILD_DIR)/$(BIN_PREFIX)/$(EXE)
+BUILD_EXEC= $(BUILD_DIR)/$(PREFIX_BIN)/$(EXE)
 BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
 
 # Rules
@@ -176,11 +163,11 @@ $(BUILD_DIR)/%.o: $(PATHS)/%.c
 #
 # prep, prep-lirary: Creates the directories for the bin and lib targets
 
-# Creates build/$(BIN_PREFIX)/lib
+# Creates build/$(PREFIX_BIN)/lib
 prep:
-	$(MKDIR) $(BUILD_DIR)/$(BIN_PREFIX)
+	$(MKDIR) $(BUILD_DIR)/$(PREFIX_BIN)
 
-# Creates build/$(BIN_PREFIX)
+# Creates build/$(PREFIX_BIN)
 prep-library:
 	$(MKDIR) $(BUILD_DIR)/$(LIB_PREFIX)
 
