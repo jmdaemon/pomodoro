@@ -27,26 +27,54 @@ endif
 GLOBAL_CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
 GLOBAL_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
 
+# Library compiler flags
 LIB_CFLAGS = -fPIC
 LIB_LDFLAGS = -shared
 
+# Release / Debug compiler flags
 REL_CFLAGS = -O3 -DNDEBUG
 DBG_CFLAGS = -g -O0 -DDEBUG 
 
+# Subproject includes & linking
 SUBPROJECT_CFLAGS = -Isubprojects/tomlc99/include
 SUBPROJECT_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
+
+# Include these directories
+INCLUDES = -I. -Iinclude $(SUBPROJECT_CFLAGS)
 
 # Keep current build compatibility for now
 CFLAGS_LIB = $(LIB_CFLAGS)
 LDFLAGS_LIB = $(LIB_LDFLAGS)
 
 #
+# Project Structure
+#
+
+# These are used to generate the build structure:
+# - build
+# - build/{debug, release}
+# - build/{debug, release}/lib/
+# - build/{debug, release}/bin/
+# - build/{debug, release}/subprojects/
+
+PATHS = src
+PATHT = test
+PATHB = build
+PATHI = include
+
+SUBPROJECTS = subprojects
+
+PREFIX_BIN = bin
+PREFIX_LIB = lib
+
+
+#
 # Prefixes
 #
 # These are used to generate the build structure:
 # build/{debug,release}/{bin, lib, subprojects}
-BUILD_PREFIX = build
-SRC_PREFIX = src
+#PATHB = build
+#PATHS = src
 BIN_PREFIX = bin
 SUBPROJECTS = subprojects
 
@@ -109,7 +137,7 @@ endif
 # BUILD_EXEC: The output directory of the binary target
 # BUILD_OBJS: The object files of the binary target
 
-BUILD_DIR = $(BUILD_PREFIX)/$(TARGET)
+BUILD_DIR = $(PATHB)/$(TARGET)
 BUILD_EXEC= $(BUILD_DIR)/$(BIN_PREFIX)/$(EXE)
 BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
 
@@ -141,7 +169,7 @@ $(BUILD_EXEC): $(BUILD_OBJS)
 	$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD_EXEC) $^
 
 # Compile all object targets in $(BUILD_DIR)
-$(BUILD_DIR)/%.o: $(SRC_PREFIX)/%.c
+$(BUILD_DIR)/%.o: $(PATHS)/%.c
 	$(CC) -c $(CFLAGS) $(TARGET_FLAGS) -o $@ $<
 #
 # Other rules
