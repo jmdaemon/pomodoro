@@ -1,4 +1,27 @@
 #
+# Operating Systems
+#
+# Enable build system compatibility for other operating systems
+ifeq ($(OS),Windows_NT)
+  ifeq ($(shell uname -s),) # not in a bash-like shell
+	CLEANUP = del /F /Q
+	MKDIR = mkdir
+  else # in a bash-like shell, like msys
+	CLEANUP = rm -f
+	MKDIR = mkdir -p
+  endif
+	TARGET_EXTENSION=exe
+	SHARED_LIBRARY_EXT=dll
+	SHARED_LIBRARY_EXT=lib
+else
+	CLEANUP = rm -f
+	MKDIR = mkdir -p
+	TARGET_EXTENSION=out
+	SHARED_LIBRARY_EXT=so
+	STATIC_LIBRARY_EXT=a
+endif
+
+#
 # Compiler flags
 #
 GLOBAL_CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
@@ -97,7 +120,7 @@ install: release $(BUILD_EXEC)
 	install $(BUILD_EXEC) $(DESTDIR)$(PREFIX)/bin/$(EXE)
 
 uninstall: release $(BUILD_EXEC)
-	rm -f $(DESTDIR)$(PREFIX)/bin/$(EXE)
+	$(CLEANUP) $(DESTDIR)$(PREFIX)/bin/$(EXE)
 
 #
 # Library builds
@@ -127,13 +150,13 @@ $(BUILD_DIR)/%.o: $(SRC_PREFIX)/%.c
 
 # Creates build/$(BIN_PREFIX)/lib
 prep:
-	@mkdir -p $(BUILD_DIR)/$(BIN_PREFIX)
+	$(MKDIR) $(BUILD_DIR)/$(BIN_PREFIX)
 
 # Creates build/$(BIN_PREFIX)
 prep-library:
-	@mkdir -p $(BUILD_DIR)/$(LIB_PREFIX)
+	$(MKDIR) $(BUILD_DIR)/$(LIB_PREFIX)
 
 remake: clean all
 
 clean:
-	rm -f $(RELEXE) $(RELOBJS) $(DBGEXE) $(DBGOBJS)
+	$(CLEANUP) $(RELEXE) $(RELOBJS) $(DBGEXE) $(DBGOBJS)
