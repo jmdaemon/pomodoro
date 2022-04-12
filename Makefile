@@ -100,7 +100,7 @@ BINARY_NAME = pomodoro
 #
 # Builds the project as a library
 
-LIBRARY_SRCS = $(SRCS)
+LIBRARY_SRCS = $(BINARY_SRCS)
 LIBRARY_OBJS = $(LIBRARY_SRCS:.c=.o)
 LIBRARY_NAME = libpomodoro.$(SHARED_LIBRARY_EXT)
 
