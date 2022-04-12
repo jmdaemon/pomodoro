@@ -57,8 +57,11 @@ SUB_TOML_INCLUDES = -I$(SUB_TOML_DIR)/include
 #
 # Compiler flags
 #
-GLOBAL_CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
-GLOBAL_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
+#GLOBAL_CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
+#GLOBAL_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
+GLOBAL_CFLAGS = -Wall -Wextra
+GLOBAL_LDFLAGS = 
+
 
 # Library compiler flags
 LIB_CFLAGS = -fPIC
@@ -69,15 +72,16 @@ REL_CFLAGS = -O3 -DNDEBUG
 DBG_CFLAGS = -g -O0 -DDEBUG 
 
 # Subproject includes & linking
-SUBPROJECT_CFLAGS = -Isubprojects/tomlc99/include
-SUBPROJECT_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
+#SUBPROJECT_CFLAGS = -Isubprojects/tomlc99/include
+#SUBPROJECT_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
 
 # Include these directories
-INCLUDES = -I. -Iinclude $(SUBPROJECT_CFLAGS)
+#INCLUDES = -I. -Iinclude $(SUBPROJECT_CFLAGS)
+INCLUDES = -I. -I$(PATHI)
 
 # Keep current build compatibility for now
-CFLAGS_LIB = $(LIB_CFLAGS)
-LDFLAGS_LIB = $(LIB_LDFLAGS)
+#CFLAGS_LIB = $(LIB_CFLAGS)
+#LDFLAGS_LIB = $(LIB_LDFLAGS)
 
 #
 # Unit Testing
@@ -96,10 +100,13 @@ $(PATHD):
 # Binary Sources
 #
 # Build the project as an executable binary
-SRCS = pomodoro.c progressbar.c timer.c
-OBJS = $(SRCS:.c=.o)
-LIB_OBJS = $(SUBPROJECTS)/tomlc99/toml.o 
-EXE  = pomodoro
+#SRCS = pomodoro.c progressbar.c timer.c
+#OBJS = $(SRCS:.c=.o)
+#LIB_OBJS = $(SUBPROJECTS)/tomlc99/toml.o 
+#EXE  = pomodoro
+BINARY_SRCS = pomodoro.c progressbar.c timer.c
+BINARY_OBJS = $(BINARY_SRCS:.c=.o)
+BINARY_NAME = pomodoro
 
 #
 # Library
@@ -152,12 +159,20 @@ LIB 				= $(LIBRARY_DIR)/$(LIBRARY_NAME)
 # BUILD_EXEC: The output directory of the binary target
 # BUILD_OBJS: The object files of the binary target
 
-BUILD_DIR = $(PATHB)/$(TARGET)
-BUILD_EXEC= $(BUILD_DIR)/$(PREFIX_BIN)/$(EXE)
-BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
+#BUILD_DIR = $(PATHB)/$(TARGET)
+#BUILD_EXEC= $(BUILD_DIR)/$(PREFIX_BIN)/$(EXE)
+#BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
+
+BINARY_DIR 	= $(TARGET_DIR)/$(PREFIX_BIN)
+EXE_DEPS 		= $(TARGET_DIR)/_$(PREFIX_BIN)_deps
+EXE_FLAGS 	= $(GLOBAL_CFLAGS) $(GLOBAL_LDFLAGS) $(TARGET_FLAGS) $(INCLUDES)
+EXE_SRCS 		= $(addprefix $(PATHS)/, $(BINARY_SRCS))
+EXE_OBJS 		= $(addprefix $(EXE_DEPS)/, $(BINARY_OBJS))
+EXE 				= $(BINARY_DIR)/$(BINARY_NAME)
 
 # Rules
 
+#.PHONY: all debug release clean prep lib remake
 .PHONY: all debug release clean prep lib remake
 
 # Toggle debug/release configurations with make debug TARGET
@@ -239,27 +254,60 @@ $(LIBRARY_DIR):
 $(LIB_DEPS):
 	$(MKDIR) $(LIB_DEPS)
 
+#
+# Binary builds
+#
+#SP_DEPENDS = $(BINARY_LIB_OBJS)
+
+bin: subprojects $(BINARY_DIR) $(EXE_DEPS) $(EXE)
+
+# Link the executable binary target
+# Depend on our binary's object files and logc
+$(EXE): $(EXE_OBJS) $(SP_DEPENDS)
+	@echo "Linking binary target"
+	$(CC) $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $^
+
+# Compile all $(EXE_OBJS) object files
+# Depend on the binary's source files and the headers
+$(EXE_DEPS)/%.o: $(PATHS)/%.c $(PATHI)/%.h $(SP_DEPENDS)
+	@echo "Compiling binary target sources"
+	$(CC) -c $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $<
+
+# Depend on the binary's source files
+$(EXE_DEPS)/%.o: $(PATHS)/%.c $(SP_DEPENDS)
+	@echo "Compiling main binary target source"
+	$(CC) -c $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $<
+
+#$(EXE_DEPS)/%.o: $(PATHS)/%.c
+	#@echo "Compiling main binary target source"
+	#$(CC) -c $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $<
+
+$(BINARY_DIR):
+	$(MKDIR) $(BINARY_DIR)
+
+$(EXE_DEPS):
+	$(MKDIR) $(EXE_DEPS)
 
 #
 # Debug/Release builds
 #
-debug release: prep $(BUILD_EXEC)
+#debug release: prep $(BUILD_EXEC)
 
-# Compile the executable binary target and its object files
-$(BUILD_EXEC): $(BUILD_OBJS)
-	$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD_EXEC) $^
+## Compile the executable binary target and its object files
+#$(BUILD_EXEC): $(BUILD_OBJS)
+	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD_EXEC) $^
 
-# Compile all object targets in $(BUILD_DIR)
-$(BUILD_DIR)/%.o: $(PATHS)/%.c
-	$(CC) -c $(CFLAGS) $(TARGET_FLAGS) -o $@ $<
+## Compile all object targets in $(BUILD_DIR)
+#$(BUILD_DIR)/%.o: $(PATHS)/%.c
+	#$(CC) -c $(CFLAGS) $(TARGET_FLAGS) -o $@ $<
 #
 # Other rules
 #
 # prep, prep-lirary: Creates the directories for the bin and lib targets
 
 # Creates build/$(PREFIX_BIN)/lib
-prep:
-	$(MKDIR) $(BUILD_DIR)/$(PREFIX_BIN)
+#prep:
+	#$(MKDIR) $(BUILD_DIR)/$(PREFIX_BIN)
 
 remake: clean all
 
