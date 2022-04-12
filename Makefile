@@ -37,10 +37,6 @@ GLOBAL_LDFLAGS =
 LIB_CFLAGS = -fPIC
 LIB_LDFLAGS = -shared
 
-# Release / Debug compiler flags
-REL_CFLAGS = -O3 -DNDEBUG
-DBG_CFLAGS = -g -O0 -DDEBUG 
-
 # Include these directories
 INCLUDES = -I. -I$(PATHI)
 
