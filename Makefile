@@ -18,8 +18,6 @@ PATHI = include
 
 SUBPROJECTS = subprojects
 
-PREFIX_BIN = bin
-
 #
 # Subprojects
 #
@@ -78,7 +76,8 @@ include make/config.mk
 # Rules
 
 #.PHONY: all debug release clean prep lib remake
-.PHONY: all debug release clean prep lib remake
+#.PHONY: all debug release clean prep lib remake
+.PHONY: clean remake
 
 ## Install/Uninstall
 install: release $(BUILD_EXEC)
