@@ -1,5 +1,6 @@
 include make/os.mk
 include make/structure.mk
+
 #
 # Compiler flags
 #
@@ -37,16 +38,7 @@ include make/config.mk
 
 # Rules
 
-#.PHONY: all debug release clean prep lib remake
-#.PHONY: all debug release clean prep lib remake
 .PHONY: clean remake
-
-## Install/Uninstall
-install: release $(BUILD_EXEC)
-	install $(BUILD_EXEC) $(DESTDIR)$(PREFIX)/bin/$(EXE)
-
-uninstall: release $(BUILD_EXEC)
-	$(CLEANUP) $(DESTDIR)$(PREFIX)/bin/$(EXE)
 
 #
 # Subprojects
@@ -76,13 +68,13 @@ include make/binary.mk
 # Other rules
 #
 
-remake: clean all
+remake: clean build
 
 clean: clean-test clean-subprojects clean-objs clean-bin clean-lib
 
 clean-subprojects:
 	@echo "Removing subprojects output"
-	$(CLEANUP) $(SP_LOGC_OBJS)
+	$(CLEANUP) $(SP_TOML_OBJS)
 	
 clean-objs:
 	@echo "Removing build object output"
