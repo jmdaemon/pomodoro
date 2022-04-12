@@ -68,12 +68,5 @@ include make/binary.mk
 # Other rules
 #
 
-remake: clean build
-
 clean: clean-test clean-subprojects clean-objs clean-bin clean-lib
-
 clean-subprojects: clean-toml
-	
-clean-objs:
-	@echo "Removing build object output"
-	$(CLEANUP) $(PATHB)/debug/*.o $(PATHB)/release/*.o
