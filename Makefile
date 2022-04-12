@@ -72,9 +72,7 @@ remake: clean build
 
 clean: clean-test clean-subprojects clean-objs clean-bin clean-lib
 
-clean-subprojects:
-	@echo "Removing subprojects output"
-	$(CLEANUP) $(SP_TOML_OBJS)
+clean-subprojects: clean-toml
 	
 clean-objs:
 	@echo "Removing build object output"
