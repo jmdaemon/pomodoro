@@ -102,41 +102,36 @@ LIBRARY_OBJS = $(LIBRARY_SRCS:.c=.o)
 LIBRARY_NAME = libpomodoro.$(SHARED_LIBRARY_EXT)
 
 
-# Default build
-all: prep release
-
-#
-# Build settings
-#
-
-# Set install
+# Set installation directory
 ifeq ($(PREFIX),)
     PREFIX := /usr/local
 endif
 
-# Release build settings
+#
+# Build settings
+#
+# Toggle between release and debug configurations
+
+# Build in release mode by default
 TARGET:=release
-TARGET_FLAGS:= -O3 -DNDEBUG $(LDFLAGS)
+TARGET_FLAGS:= $(REL_CFLAGS)
+
+# Release settings
+ifeq ($(filter release,$(MAKECMDGOALS)),release)
+TARGET = release
+TARGET_FLAGS = $(REL_CFLAGS)
+endif
 
 # Debug build settings
 ifeq ($(filter debug,$(MAKECMDGOALS)),debug)
-TARGET=debug
-TARGET_FLAGS= -g -O0 -DDEBUG $(LDFLAGS)
+TARGET = debug
+TARGET_FLAGS = $(DBG_CFLAGS)
 endif
 
 # Debug or Release target directory
 TARGET_DIR = $(PATHB)/$(TARGET)
 
 # Library build settings
-# TARGET_FLAGS: 	The library flags to build the library
-# BUILD_LIB: 			The directory of the target library
-# BUILD_LIB_OBJS: The object files of the library target
-#ifeq ($(filter lib,$(MAKECMDGOALS)),lib)
-#TARGET_FLAGS = $(LDFLAGS) $(CFLAGS_LIB) $(LDFLAGS_LIB) 
-#BUILD_LIB = $(BUILD_DIR)/$(LIB_PREFIX)/$(LIB)
-#BUILD_LIB_OBJS = $(addprefix $(BUILD_DIR)/, $(LIB_OBJS))
-#endif
-
 LIBRARY_DIR = $(TARGET_DIR)/$(PREFIX_LIB)
 LIB_DEPS 		= $(TARGET_DIR)/_$(PREFIX_LIB)_deps
 LIB_FLAGS 	= $(GLOBAL_CFLAGS) $(GLOBAL_LDFLAGS) $(TARGET_FLAGS) $(INCLUDES)
@@ -156,6 +151,7 @@ BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
 # Rules
 
 .PHONY: all debug release clean prep lib remake
+
 # Toggle debug/release configurations with make debug TARGET
 debug:
 	@echo "Setting debug build options"
@@ -174,11 +170,6 @@ uninstall: release $(BUILD_EXEC)
 #
 # Library builds
 #
-#lib: prep-library $(BUILD_LIB)
-
-## Compiles the shared library target and its object files
-#$(BUILD_LIB): $(BUILD_LIB_OBJS) 
-	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $@ $^
 
 lib: subprojects $(LIBRARY_DIR) $(LIB_DEPS) $(LIB)
 
@@ -226,10 +217,6 @@ $(BUILD_DIR)/%.o: $(PATHS)/%.c
 # Creates build/$(PREFIX_BIN)/lib
 prep:
 	$(MKDIR) $(BUILD_DIR)/$(PREFIX_BIN)
-
-# Creates build/$(PREFIX_BIN)
-#prep-library:
-	#$(MKDIR) $(BUILD_DIR)/$(LIB_PREFIX)
 
 remake: clean all
 
