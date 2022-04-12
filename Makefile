@@ -1,27 +1,5 @@
 include make/os.mk
-
-#
-# Project Structure
-#
-
-# These are used to generate the build structure:
-# - build
-# - build/{debug, release}
-# - build/{debug, release}/lib/
-# - build/{debug, release}/bin/
-# - build/{debug, release}/subprojects/
-
-PATHS = src
-PATHT = test
-PATHB = build
-PATHI = include
-
-SUBPROJECTS = subprojects
-
-#
-# Subprojects
-#
-
+include make/structure.mk
 #
 # Compiler flags
 #
