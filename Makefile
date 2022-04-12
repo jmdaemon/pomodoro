@@ -92,10 +92,14 @@ EXE  = pomodoro
 # Library
 #
 # Builds the project as a library
-LIB_SRCS = $(SRCS)
-LIB_OBJS = $(SRCS:.c=.o)
-LIB = libpomodoro.so
-LIB_PREFIX = lib
+#LIB_SRCS = $(SRCS)
+#LIB_OBJS = $(SRCS:.c=.o)
+#LIB = libpomodoro.so
+#LIB_PREFIX = lib
+
+LIBRARY_SRCS = $(SRCS)
+LIBRARY_OBJS = $(LIBRARY_SRCS:.c=.o)
+LIBRARY_NAME = libpomodoro.$(SHARED_LIBRARY_EXT)
 
 
 # Default build
@@ -120,15 +124,25 @@ TARGET=debug
 TARGET_FLAGS= -g -O0 -DDEBUG $(LDFLAGS)
 endif
 
+# Debug or Release target directory
+TARGET_DIR = $(PATHB)/$(TARGET)
+
 # Library build settings
 # TARGET_FLAGS: 	The library flags to build the library
 # BUILD_LIB: 			The directory of the target library
 # BUILD_LIB_OBJS: The object files of the library target
-ifeq ($(filter lib,$(MAKECMDGOALS)),lib)
-TARGET_FLAGS = $(LDFLAGS) $(CFLAGS_LIB) $(LDFLAGS_LIB) 
-BUILD_LIB = $(BUILD_DIR)/$(LIB_PREFIX)/$(LIB)
-BUILD_LIB_OBJS = $(addprefix $(BUILD_DIR)/, $(LIB_OBJS))
-endif
+#ifeq ($(filter lib,$(MAKECMDGOALS)),lib)
+#TARGET_FLAGS = $(LDFLAGS) $(CFLAGS_LIB) $(LDFLAGS_LIB) 
+#BUILD_LIB = $(BUILD_DIR)/$(LIB_PREFIX)/$(LIB)
+#BUILD_LIB_OBJS = $(addprefix $(BUILD_DIR)/, $(LIB_OBJS))
+#endif
+
+LIBRARY_DIR = $(TARGET_DIR)/$(PREFIX_LIB)
+LIB_DEPS 		= $(TARGET_DIR)/_$(PREFIX_LIB)_deps
+LIB_FLAGS 	= $(GLOBAL_CFLAGS) $(GLOBAL_LDFLAGS) $(TARGET_FLAGS) $(INCLUDES)
+LIB_SRCS 		= $(addprefix $(PATHS)/, $(LIBRARY_SRCS))
+LIB_OBJS 		= $(addprefix $(LIB_DEPS)/, $(LIBRARY_OBJS))
+LIB 				= $(LIBRARY_DIR)/$(LIBRARY_NAME)
 
 # Executable settings
 # BUILD_DIR: 	The directory of the target.
@@ -160,11 +174,37 @@ uninstall: release $(BUILD_EXEC)
 #
 # Library builds
 #
-lib: prep-library $(BUILD_LIB)
+#lib: prep-library $(BUILD_LIB)
 
-# Compiles the shared library target and its object files
-$(BUILD_LIB): $(BUILD_LIB_OBJS) 
-	$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $@ $^
+## Compiles the shared library target and its object files
+#$(BUILD_LIB): $(BUILD_LIB_OBJS) 
+	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $@ $^
+
+lib: subprojects $(LIBRARY_DIR) $(LIB_DEPS) $(LIB)
+
+# Compile the shared library target
+# Depend upon logc and the library object files and the subproject object files
+$(LIB): $(LIB_OBJS)
+	@echo "Linking library target"
+	$(CC) $(LIB_LDFLAGS) $(LIB_FLAGS) -o $@ $^
+
+# Compile all library object files
+# Depends on the source files, headers and subproject object files
+$(LIB_DEPS)/%.o: $(PATHS)/%.c $(PATHI)/%.h
+	@echo "Compiling library target sources"
+	$(CC) $(LIB_CFLAGS) -c $(LIB_FLAGS) -o $@ $<
+
+# Depends on the source files, and subproject object files
+$(LIB_DEPS)/%.o: $(PATHS)/%.c
+	@echo "Compiling main library target source"
+	$(CC) $(LIB_CFLAGS) -c $(LIB_FLAGS) -o $@ $<
+
+$(LIBRARY_DIR):
+	$(MKDIR) $(LIBRARY_DIR)
+
+$(LIB_DEPS):
+	$(MKDIR) $(LIB_DEPS)
+
 
 #
 # Debug/Release builds
@@ -188,8 +228,8 @@ prep:
 	$(MKDIR) $(BUILD_DIR)/$(PREFIX_BIN)
 
 # Creates build/$(PREFIX_BIN)
-prep-library:
-	$(MKDIR) $(BUILD_DIR)/$(LIB_PREFIX)
+#prep-library:
+	#$(MKDIR) $(BUILD_DIR)/$(LIB_PREFIX)
 
 remake: clean all
 
