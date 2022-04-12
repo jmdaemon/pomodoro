@@ -97,14 +97,6 @@ EXE 				= $(BINARY_DIR)/$(BINARY_NAME)
 #.PHONY: all debug release clean prep lib remake
 .PHONY: all debug release clean prep lib remake
 
-# Toggle debug/release configurations with make debug TARGET
-debug:
-	@echo "Setting debug build options"
-
-release:
-	@echo "Setting release build options"
-
-
 ## Install/Uninstall
 install: release $(BUILD_EXEC)
 	install $(BUILD_EXEC) $(DESTDIR)$(PREFIX)/bin/$(EXE)
