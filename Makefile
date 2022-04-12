@@ -7,11 +7,6 @@ include make/structure.mk
 GLOBAL_CFLAGS = -Wall -Wextra
 GLOBAL_LDFLAGS = 
 
-
-# Library compiler flags
-LIB_CFLAGS = -fPIC
-LIB_LDFLAGS = -shared
-
 # Include these directories
 INCLUDES = -I. -I$(PATHI)
 
