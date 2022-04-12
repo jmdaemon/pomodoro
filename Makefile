@@ -10,18 +10,7 @@ GLOBAL_LDFLAGS =
 # Include these directories
 INCLUDES = -I. -I$(PATHI)
 
-#
-# Unit Testing
-#
-
-# Unit Testing Directories
-PATHU = subprojects/unity/src
-PATHD = $(PATHB)/depends
-PATHO = $(PATHB)/objs
-PATHR = $(PATHB)/results
-
-$(PATHD):
-	$(MKDIR) $(PATHD)
+include make/unity.mk
 
 #
 # Binary Sources
