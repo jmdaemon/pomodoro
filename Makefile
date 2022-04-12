@@ -57,8 +57,7 @@ SUB_TOML_INCLUDES = -I$(SUB_TOML_DIR)/include
 #
 # Compiler flags
 #
-#GLOBAL_CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
-#GLOBAL_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
+
 GLOBAL_CFLAGS = -Wall -Wextra
 GLOBAL_LDFLAGS = 
 
@@ -71,17 +70,8 @@ LIB_LDFLAGS = -shared
 REL_CFLAGS = -O3 -DNDEBUG
 DBG_CFLAGS = -g -O0 -DDEBUG 
 
-# Subproject includes & linking
-#SUBPROJECT_CFLAGS = -Isubprojects/tomlc99/include
-#SUBPROJECT_LDFLAGS = -Lsubprojects/tomlc99/lib -ltoml
-
 # Include these directories
-#INCLUDES = -I. -Iinclude $(SUBPROJECT_CFLAGS)
 INCLUDES = -I. -I$(PATHI)
-
-# Keep current build compatibility for now
-#CFLAGS_LIB = $(LIB_CFLAGS)
-#LDFLAGS_LIB = $(LIB_LDFLAGS)
 
 #
 # Unit Testing
@@ -100,10 +90,7 @@ $(PATHD):
 # Binary Sources
 #
 # Build the project as an executable binary
-#SRCS = pomodoro.c progressbar.c timer.c
-#OBJS = $(SRCS:.c=.o)
-#LIB_OBJS = $(SUBPROJECTS)/tomlc99/toml.o 
-#EXE  = pomodoro
+
 BINARY_SRCS = pomodoro.c progressbar.c timer.c
 BINARY_OBJS = $(BINARY_SRCS:.c=.o)
 BINARY_NAME = pomodoro
@@ -155,14 +142,6 @@ LIB_OBJS 		= $(addprefix $(LIB_DEPS)/, $(LIBRARY_OBJS))
 LIB 				= $(LIBRARY_DIR)/$(LIBRARY_NAME)
 
 # Executable settings
-# BUILD_DIR: 	The directory of the target.
-# BUILD_EXEC: The output directory of the binary target
-# BUILD_OBJS: The object files of the binary target
-
-#BUILD_DIR = $(PATHB)/$(TARGET)
-#BUILD_EXEC= $(BUILD_DIR)/$(PREFIX_BIN)/$(EXE)
-#BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
-
 BINARY_DIR 	= $(TARGET_DIR)/$(PREFIX_BIN)
 EXE_DEPS 		= $(TARGET_DIR)/_$(PREFIX_BIN)_deps
 EXE_FLAGS 	= $(GLOBAL_CFLAGS) $(GLOBAL_LDFLAGS) $(TARGET_FLAGS) $(INCLUDES)
@@ -225,6 +204,9 @@ $(SP_TOML_OBJS): $(SP_TOML_SRCS)
 $(SP_TOML_DIR):
 	$(MKDIR) $(SP_TOML_DIR)
 
+# Build both targets
+build: lib bin
+
 #
 # Library builds
 #
@@ -257,7 +239,6 @@ $(LIB_DEPS):
 #
 # Binary builds
 #
-#SP_DEPENDS = $(BINARY_LIB_OBJS)
 
 bin: subprojects $(BINARY_DIR) $(EXE_DEPS) $(EXE)
 
@@ -278,10 +259,6 @@ $(EXE_DEPS)/%.o: $(PATHS)/%.c $(SP_DEPENDS)
 	@echo "Compiling main binary target source"
 	$(CC) -c $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $<
 
-#$(EXE_DEPS)/%.o: $(PATHS)/%.c
-	#@echo "Compiling main binary target source"
-	#$(CC) -c $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $<
-
 $(BINARY_DIR):
 	$(MKDIR) $(BINARY_DIR)
 
@@ -289,27 +266,29 @@ $(EXE_DEPS):
 	$(MKDIR) $(EXE_DEPS)
 
 #
-# Debug/Release builds
-#
-#debug release: prep $(BUILD_EXEC)
-
-## Compile the executable binary target and its object files
-#$(BUILD_EXEC): $(BUILD_OBJS)
-	#$(CC) $(CFLAGS) $(TARGET_FLAGS) -o $(BUILD_EXEC) $^
-
-## Compile all object targets in $(BUILD_DIR)
-#$(BUILD_DIR)/%.o: $(PATHS)/%.c
-	#$(CC) -c $(CFLAGS) $(TARGET_FLAGS) -o $@ $<
-#
 # Other rules
 #
-# prep, prep-lirary: Creates the directories for the bin and lib targets
-
-# Creates build/$(PREFIX_BIN)/lib
-#prep:
-	#$(MKDIR) $(BUILD_DIR)/$(PREFIX_BIN)
 
 remake: clean all
 
-clean:
-	$(CLEANUP) $(RELEXE) $(RELOBJS) $(DBGEXE) $(DBGOBJS)
+clean: clean-test clean-subprojects clean-objs clean-bin clean-lib
+
+clean-subprojects:
+	@echo "Removing subprojects output"
+	$(CLEANUP) $(SP_LOGC_OBJS)
+	
+clean-objs:
+	@echo "Removing build object output"
+	$(CLEANUP) $(PATHB)/debug/*.o $(PATHB)/release/*.o
+
+# Remove output files for executables
+clean-lib: clean-objs
+	@echo "Removing library build output"
+	$(CLEANUP) $(PATHB)/debug/lib/$(LIBRARY_NAME) $(PATHB)/release/lib/$(LIBRARY_NAME)
+	$(CLEANUP) $(PATHB)/debug/_$(PREFIX_LIB)_deps/*.o $(PATHB)/release/_$(PREFIX_LIB)_deps/*.o
+
+# Remove output files for executables
+clean-bin: clean-objs
+	@echo "Removing binary build output"
+	$(CLEANUP) $(PATHB)/debug/bin/$(BINARY_NAME) $(PATHB)/release/bin/$(BINARY_NAME)
+	$(CLEANUP) $(PATHB)/debug/_$(PREFIX_BIN)_deps/*.o $(PATHB)/release/_$(PREFIX_BIN)_deps/*.o
