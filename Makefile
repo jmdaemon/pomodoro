@@ -71,10 +71,7 @@ LIBRARY_SRCS = $(BINARY_SRCS)
 LIBRARY_OBJS = $(LIBRARY_SRCS:.c=.o)
 LIBRARY_NAME = libpomodoro.$(SHARED_LIBRARY_EXT)
 
-# Set installation directory
-ifeq ($(PREFIX),)
-    PREFIX := /usr/local
-endif
+include make/install.mk
 
 # Configure debug/release versions
 include make/config.mk
