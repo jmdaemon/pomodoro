@@ -22,6 +22,39 @@ else
 endif
 
 #
+# Project Structure
+#
+
+# These are used to generate the build structure:
+# - build
+# - build/{debug, release}
+# - build/{debug, release}/lib/
+# - build/{debug, release}/bin/
+# - build/{debug, release}/subprojects/
+
+PATHS = src
+PATHT = test
+PATHB = build
+PATHI = include
+
+SUBPROJECTS = subprojects
+
+PREFIX_BIN = bin
+PREFIX_LIB = lib
+
+#
+# Subprojects
+#
+
+# Toml
+SUB_TOML_NAME = tomlc99
+SUB_TOML_SRCS = toml.c
+SUB_TOML_OBJS = $(SUB_TOML_SRCS:.c=.o)
+SUB_TOML_DIR 	= $(SUBPROJECTS)/$(SUB_TOML_NAME)
+SUB_TOML_SRC 	= $(SUB_TOML_DIR)/src
+SUB_TOML_INCLUDES = -I$(SUB_TOML_DIR)/include
+
+#
 # Compiler flags
 #
 GLOBAL_CFLAGS = -Wall -Wextra -Iinclude -Isubprojects/tomlc99/include
@@ -47,27 +80,6 @@ CFLAGS_LIB = $(LIB_CFLAGS)
 LDFLAGS_LIB = $(LIB_LDFLAGS)
 
 #
-# Project Structure
-#
-
-# These are used to generate the build structure:
-# - build
-# - build/{debug, release}
-# - build/{debug, release}/lib/
-# - build/{debug, release}/bin/
-# - build/{debug, release}/subprojects/
-
-PATHS = src
-PATHT = test
-PATHB = build
-PATHI = include
-
-SUBPROJECTS = subprojects
-
-PREFIX_BIN = bin
-PREFIX_LIB = lib
-
-#
 # Binary Sources
 #
 # Build the project as an executable binary
@@ -85,7 +97,6 @@ LIB_OBJS = $(SRCS:.c=.o)
 LIB = libpomodoro.so
 LIB_PREFIX = lib
 
-.PHONY: all clean prep debug release lib remake
 
 # Default build
 all: prep release
@@ -129,6 +140,15 @@ BUILD_EXEC= $(BUILD_DIR)/$(PREFIX_BIN)/$(EXE)
 BUILD_OBJS= $(addprefix $(BUILD_DIR)/, $(OBJS)) $(LIB_OBJS)
 
 # Rules
+
+.PHONY: all debug release clean prep lib remake
+# Toggle debug/release configurations with make debug TARGET
+debug:
+	@echo "Setting debug build options"
+
+release:
+	@echo "Setting release build options"
+
 
 ## Install/Uninstall
 install: release $(BUILD_EXEC)
