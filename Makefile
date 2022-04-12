@@ -75,14 +75,6 @@ include make/install.mk
 # Configure debug/release versions
 include make/config.mk
 
-# Executable settings
-BINARY_DIR 	= $(TARGET_DIR)/$(PREFIX_BIN)
-EXE_DEPS 		= $(TARGET_DIR)/_$(PREFIX_BIN)_deps
-EXE_FLAGS 	= $(GLOBAL_CFLAGS) $(GLOBAL_LDFLAGS) $(TARGET_FLAGS) $(INCLUDES)
-EXE_SRCS 		= $(addprefix $(PATHS)/, $(BINARY_SRCS))
-EXE_OBJS 		= $(addprefix $(EXE_DEPS)/, $(BINARY_OBJS))
-EXE 				= $(BINARY_DIR)/$(BINARY_NAME)
-
 # Rules
 
 #.PHONY: all debug release clean prep lib remake
@@ -116,34 +108,8 @@ build: lib bin
 # Build as a library
 include make/library.mk
 
-#
-# Binary builds
-#
-
-bin: subprojects $(BINARY_DIR) $(EXE_DEPS) $(EXE)
-
-# Link the executable binary target
-# Depend on our binary's object files and logc
-$(EXE): $(EXE_OBJS) $(SP_DEPENDS)
-	@echo "Linking binary target"
-	$(CC) $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $^
-
-# Compile all $(EXE_OBJS) object files
-# Depend on the binary's source files and the headers
-$(EXE_DEPS)/%.o: $(PATHS)/%.c $(PATHI)/%.h $(SP_DEPENDS)
-	@echo "Compiling binary target sources"
-	$(CC) -c $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $<
-
-# Depend on the binary's source files
-$(EXE_DEPS)/%.o: $(PATHS)/%.c $(SP_DEPENDS)
-	@echo "Compiling main binary target source"
-	$(CC) -c $(EXE_FLAGS) $(SP_INCLUDES) -o $@ $<
-
-$(BINARY_DIR):
-	$(MKDIR) $(BINARY_DIR)
-
-$(EXE_DEPS):
-	$(MKDIR) $(EXE_DEPS)
+# Build as a binary
+include make/binary.mk
 
 #
 # Other rules
@@ -160,9 +126,3 @@ clean-subprojects:
 clean-objs:
 	@echo "Removing build object output"
 	$(CLEANUP) $(PATHB)/debug/*.o $(PATHB)/release/*.o
-
-# Remove output files for executables
-clean-bin: clean-objs
-	@echo "Removing binary build output"
-	$(CLEANUP) $(PATHB)/debug/bin/$(BINARY_NAME) $(PATHB)/release/bin/$(BINARY_NAME)
-	$(CLEANUP) $(PATHB)/debug/_$(PREFIX_BIN)_deps/*.o $(PATHB)/release/_$(PREFIX_BIN)_deps/*.o
