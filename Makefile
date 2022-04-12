@@ -19,7 +19,6 @@ PATHI = include
 SUBPROJECTS = subprojects
 
 PREFIX_BIN = bin
-PREFIX_LIB = lib
 
 #
 # Subprojects
