@@ -22,10 +22,18 @@ INCLUDES = -I. -I$(PATHI)
 # SP_DEPENDS 	: Object files to be included into lib, bin targets
 # SP_INCLUDES	: Header files to be included into lib,bin
 # SP_NAMES 		: Subprojects to include
-SP_NAMES = toml
+SP_NAMES := tomlc99
 
-include make/unity.mk
+include make/subproject.mk
 include make/tomlc99.mk
+include make/unity.mk
+
+# Add optional dbgsp target to show subproject eval expansion info
+ifeq ($(filter dbgsp,$(MAKECMDGOALS)),dbgsp)
+$(info $(foreach subproject,$(SP_NAMES),$(call subproject_template,$(subproject))))
+else
+$(eval $(foreach subproject,$(SP_NAMES),$(call subproject_template,$(subproject))))
+endif
 
 #
 # Binary Sources
@@ -67,5 +75,5 @@ install-subprojects: $(INSTALL_SP_TARGET)
 uninstall-subprojects: $(UNINSTALL_SP_TARGET)
 
 # Clean specific output files
-clean: clean-test clean-subprojects clean-objs clean-bin clean-lib
-clean-subprojects: clean-toml
+clean: $(CLEAN_TARGET)
+clean-subprojects: $(CLEAN_SP_TARGET)
