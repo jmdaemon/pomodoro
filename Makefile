@@ -22,11 +22,12 @@ INCLUDES = -I. -I$(PATHI)
 # SP_DEPENDS 	: Object files to be included into lib, bin targets
 # SP_INCLUDES	: Header files to be included into lib,bin
 # SP_NAMES 		: Subprojects to include
-SP_NAMES := tomlc99
+SP_NAMES := tomlc99 utility
 
 include make/subproject.mk
 include make/tomlc99.mk
 include make/unity.mk
+include make/utility.mk
 
 # Add optional dbgsp target to show subproject eval expansion info
 ifeq ($(filter dbgsp,$(MAKECMDGOALS)),dbgsp)
