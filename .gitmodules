@@ -4,3 +4,6 @@
 [submodule "subprojects/tomlc99"]
 	path = subprojects/tomlc99
 	url = https://github.com/cktan/tomlc99
+[submodule "subprojects/utility"]
+	path = subprojects/utility
+	url = https://github.com/jmdaemon/utility
