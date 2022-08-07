@@ -1,5 +1,10 @@
+.SECONDEXPANSION:
+
 include make/os.mk
 include make/structure.mk
+include make/config.mk
+include make/install.mk
+include make/templates.mk
 
 #
 # Compiler flags
@@ -11,7 +16,16 @@ GLOBAL_LDFLAGS =
 # Include these directories
 INCLUDES = -I. -I$(PATHI)
 
+#
+# Subprojects
+#
+# SP_DEPENDS 	: Object files to be included into lib, bin targets
+# SP_INCLUDES	: Header files to be included into lib,bin
+# SP_NAMES 		: Subprojects to include
+SP_NAMES = toml
+
 include make/unity.mk
+include make/tomlc99.mk
 
 #
 # Binary Sources
@@ -30,30 +44,14 @@ BINARY_NAME = pomodoro
 LIBRARY_SRCS = $(BINARY_SRCS)
 LIBRARY_OBJS = $(LIBRARY_SRCS:.c=.o)
 LIBRARY_NAME = libpomodoro.$(SHARED_LIBRARY_EXT)
-
-include make/install.mk
-
-# Configure debug/release versions
-include make/config.mk
+LIBRARY_HDRS = 
 
 # Rules
 
-.PHONY: clean remake
-
-#
-# Subprojects
-#
-# Build subprojects alongside our project
+.PHONY: build subprojects clean
 
 # Subprojects that must be built
-subprojects: toml
-
-# SP_DEPENDS : Object files to be included into lib, bin targets
-# SP_INCLUDES: Header files to be included into lib,bin
-SP_DEPENDS =
-SP_INCLUDES =
-
-include make/tomlc99.mk
+subprojects: $(SP_NAMES)
 
 # Build both targets
 build: lib bin
@@ -64,9 +62,10 @@ include make/library.mk
 # Build as a binary
 include make/binary.mk
 
-#
-# Other rules
-#
+# Install/Uninstall rules
+install-subprojects: $(INSTALL_SP_TARGET)
+uninstall-subprojects: $(UNINSTALL_SP_TARGET)
 
+# Clean specific output files
 clean: clean-test clean-subprojects clean-objs clean-bin clean-lib
 clean-subprojects: clean-toml
