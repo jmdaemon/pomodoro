@@ -1,0 +1,79 @@
+cmake_minimum_required(VERSION 3.12)
+
+project(
+    pomodoro
+    VERSION 0.1.0
+    DESCRIPTION "Convert between Binary & SI Bytes"
+    LANGUAGES C)
+
+# Variable Toggles
+set(NO_COLOR OFF CACHE INTERNAL "Toggles colored output errors")
+set(BUILD_DOC ON CACHE INTERNAL "Build documentation")
+set(ENABLE_LOGGING OFF CACHE INTERNAL "View the logging statements/debug info")
+set(LOG_LEVEL 0 CACHE INTERNAL "Enable only specific log levels")
+
+# Require out-of-source builds
+file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
+if(EXISTS "${LOC_PATH}")
+    message(FATAL_ERROR "You cannot build in a source directory (or any directory with "
+                        "CMakeLists.txt file). Please make a build subdirectory. Feel free to "
+                        "remove CMakeCache.txt and CMakeFiles.")
+endif()
+
+# Include CMake modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/modules/" "${PROJECT_SOURCE_DIR}/cmake")
+
+if (NO_COLOR)
+    # Don't use colored output
+else()
+    # Include colored output by default
+    include(Color)
+endif()
+
+# Include header files
+set(INCLUDES_DIR "${PROJECT_SOURCE_DIR}/include")
+set(HEADERS_VERSION "${PROJECT_BINARY_DIR}/include")
+
+# Single source project versions
+configure_file(
+  "${PROJECT_SOURCE_DIR}/include/version.h.in"
+  "${PROJECT_BINARY_DIR}/include/version.h")
+
+# Include dependencies
+include(FetchContent)
+include(logc)
+
+# Specify project dependencies
+# PKG_DEPENDS: Library names to link the output files 
+# DEB_DEPENDS: Debian packages that provide the libraries the project depends upon
+set(PKG_DEPENDS tomlc99)
+set(DEB_DEPENDS libc )
+
+# Add subdirectories
+add_subdirectory(subprojects)
+add_subdirectory(src)
+
+if(BUILD_TESTING)
+    include(Unity)
+    include(CTest)
+    add_subdirectory(test)
+endif()
+
+# Generate automatic docs with Doxygen
+include(Docs)
+
+# Install build artifacts system-wide
+include(Install)
+
+# Packages
+include(InstallRequiredSystemLibraries)
+include(Debian)
+
+# Packaging
+cpack_add_component(bin
+    DISPLAY_NAME "Application"
+    DESCRIPTION ${PROJECT_DESCRIPTION})
+
+cpack_add_component(lib
+    DISPLAY_NAME "Library"
+    DESCRIPTION "Shared library with header used for ${PROJECT_NAME}")
