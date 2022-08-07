@@ -42,11 +42,12 @@ configure_file(
 # Include dependencies
 include(FetchContent)
 include(logc)
+#include(tomlc99)
 
 # Specify project dependencies
 # PKG_DEPENDS: Library names to link the output files 
 # DEB_DEPENDS: Debian packages that provide the libraries the project depends upon
-set(PKG_DEPENDS tomlc99)
+set(PKG_DEPENDS toml)
 set(DEB_DEPENDS libc )
 
 # Add subdirectories
