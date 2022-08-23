@@ -6,11 +6,13 @@ project(
     DESCRIPTION "Convert between Binary & SI Bytes"
     LANGUAGES C)
 
-# Variable Toggles
-set(NO_COLOR OFF CACHE INTERNAL "Toggles colored output errors")
-set(BUILD_DOC ON CACHE INTERNAL "Build documentation")
-set(ENABLE_LOGGING OFF CACHE INTERNAL "View the logging statements/debug info")
-set(LOG_LEVEL 0 CACHE INTERNAL "Enable only specific log levels")
+if (NOT USE_AS_SUBPROJECT)
+    # Variable Toggles
+    set(NO_COLOR OFF CACHE INTERNAL "Toggles colored output errors")
+    set(BUILD_DOC ON CACHE INTERNAL "Build documentation")
+    set(ENABLE_LOGGING OFF CACHE INTERNAL "View the logging statements/debug info")
+    set(LOG_LEVEL 0 CACHE INTERNAL "Enable only specific log levels")
+endif()
 
 # Require out-of-source builds
 file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
@@ -41,20 +43,26 @@ configure_file(
 
 # Include dependencies
 include(FetchContent)
+
+add_subdirectory(subprojects)
+set(USE_AS_SUBPROJECT TRUE)
+set(USE_AS_SUBMODULE TRUE)
+
 include(logc)
 #include(tomlc99)
+unset(USE_AS_SUBPROJECT)
+unset(USE_AS_SUBMODULE)
 
 # Specify project dependencies
 # PKG_DEPENDS: Library names to link the output files 
 # DEB_DEPENDS: Debian packages that provide the libraries the project depends upon
 set(PKG_DEPENDS toml)
-set(DEB_DEPENDS libc )
+set(DEB_DEPENDS libc)
 
 # Add subdirectories
-add_subdirectory(subprojects)
 add_subdirectory(src)
 
-if(BUILD_TESTING)
+if(BUILD_TESTING AND NOT USE_AS_SUBPROJECT)
     include(Unity)
     include(CTest)
     add_subdirectory(test)
