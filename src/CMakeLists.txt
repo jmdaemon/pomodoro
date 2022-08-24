@@ -26,6 +26,9 @@ add_library(${LIB_NAME} STATIC ${SOURCES})
 target_include_directories(${LIB_NAME} PUBLIC ${HEADERS})
 target_link_libraries(${LIB_NAME} PRIVATE ${PKG_DEPENDS})
 
+# Rename static library without _static suffix
+set_target_properties(${LIB_NAME} PROPERTIES OUTPUT_NAME ${TARGET})
+
 # Manual Installs
 
 ## Executable
