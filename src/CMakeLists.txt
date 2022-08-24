@@ -13,21 +13,11 @@ target_link_libraries(${BIN_NAME} PRIVATE ${PKG_DEPENDS})
 set_target_properties(${BIN_NAME} PROPERTIES OUTPUT_NAME ${TARGET})
 
 # Libraries
-
-## Shared library
-set(LIB_NAME ${TARGET})
-add_library(${LIB_NAME} SHARED ${SOURCES})
-target_include_directories(${LIB_NAME} PUBLIC ${HEADERS})
-target_link_libraries(${LIB_NAME} PRIVATE ${PKG_DEPENDS})
-
-## Static library
-set(LIB_NAME ${TARGET}_static)
-add_library(${LIB_NAME} STATIC ${SOURCES})
-target_include_directories(${LIB_NAME} PUBLIC ${HEADERS})
-target_link_libraries(${LIB_NAME} PRIVATE ${PKG_DEPENDS})
-
-# Rename static library without _static suffix
-set_target_properties(${LIB_NAME} PROPERTIES OUTPUT_NAME ${TARGET})
+make_ssl(
+    NAME ${TARGET}
+    HDRS ${HEADERS}
+    SRCS ${SOURCES}
+    DEPS ${PKG_DEPENDS})
 
 # Manual Installs
 
