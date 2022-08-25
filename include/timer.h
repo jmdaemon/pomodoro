@@ -7,12 +7,13 @@
 extern "C" {
 #endif
 
+#include <progressbar.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "progressbar.h"
 
 typedef struct Timer {
   int shortbreak;

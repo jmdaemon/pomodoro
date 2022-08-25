@@ -1,6 +1,6 @@
 set(HEADERS ${INCLUDES_DIR} ${HEADERS_VERSION} ${HEADERS_TOMLC99})
 set(TARGET pomodoro)
-set(SOURCES pomodoro.c progressbar.c timer.c)
+set(SOURCES pomodoro.c timer.c)
 
 # Executable
 make_bin(
