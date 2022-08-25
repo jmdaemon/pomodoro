@@ -48,12 +48,14 @@ include(Library)
 include_subprojects(
     TOGGLE TRUE
     GIT_MODULE TRUE
-    INCLUDES logc)
+    INCLUDES logc utility)
+
+#include(tomlc99)
 
 # Specify project dependencies
 # PKG_DEPENDS: Library names to link the output files 
 # DEB_DEPENDS: Debian packages that provide the libraries the project depends upon
-set(PKG_DEPENDS toml)
+set(PKG_DEPENDS logc toml pcre utility)
 set(DEB_DEPENDS libc)
 
 # Add subdirectories

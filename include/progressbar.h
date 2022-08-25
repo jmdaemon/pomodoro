@@ -12,9 +12,6 @@ extern "C" {
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <time.h>
-
-#define PDT (+5)
 
 typedef struct ProgressBar {
     unsigned long maxlength;
@@ -31,8 +28,6 @@ typedef struct ProgressBar {
 
 ProgressBar init_progress_bar(unsigned long maxlength, char left, char right, char fill, char empty);
 void draw_progress_bar(ProgressBar* p, time_t time_beg, time_t time_end);
-time_t get_time();
-char* timestamp(time_t rawtime);
 
 #ifdef __cplusplus
 }

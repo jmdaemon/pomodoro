@@ -1,6 +1,7 @@
 #include "progressbar.h"
 #include "timer.h"
 #include "toml.h"
+#include "utility.h"
 
 #include <errno.h>
 

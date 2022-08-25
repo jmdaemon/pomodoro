@@ -13,29 +13,13 @@ ProgressBar init_progress_bar (unsigned long maxlength, char left, char right, c
     return p;
 }
 
-/* Get the current time */
-time_t get_time() {
-    time_t rawtime;
-    time ( &rawtime );
-    return rawtime;
-}
-
-/* Create the timestamp string from a time. */
-char* timestamp (time_t rawtime) {
-    struct tm * ptm;
-    ptm = gmtime ( &rawtime );
-    char* result = (char*)malloc(5 * sizeof(char));
-    sprintf (result, "%2d:%02d", (ptm->tm_hour+PDT)%24, ptm->tm_min);
-    return result;
-}
-
 /* Draw the progress bar with timestamps */
 void draw_progress_bar (ProgressBar* p, time_t time_beg, time_t time_end) {
     /** Move to the beginning of the line. */
     printf("\r");
 
     /** Print the current timestamp and the end timestamp */
-    printf("%s / %s ", timestamp(time_beg), timestamp(time_end));
+    printf("%s / %s ", ltimestamp(time_beg), ltimestamp(time_end));
 
     /** Print the left margin char. */
     printf("%c", p->leftmargin);
