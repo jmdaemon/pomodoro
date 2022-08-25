@@ -1,9 +1,4 @@
-#include "progressbar.h"
-#include "timer.h"
-#include "toml.h"
-#include "utility.h"
-
-#include <errno.h>
+#include "pomodoro.h"
 
 static void error(const char* msg, const char* msg1) {
     fprintf(stderr, "ERROR: %s%s\n", msg, msg1?msg1:"");
@@ -92,7 +87,7 @@ void parse_config(char* configfp, Timer *timer) {
 int main() {
   Timer *timer = init_timer(to_secs(10), to_secs(30));
 
-  char* configfp = getenv("POMODORO_CONFIG");
+  char* configfp = getenv(POMODORO_CONFIG);
   parse_config(configfp, timer);
 
   pthread_t thread_id;
