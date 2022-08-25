@@ -5,7 +5,7 @@ set(SOURCES pomodoro.c timer.c)
 # Executable
 make_bin(
     NAME ${TARGET}
-    SRCS ${SOURCES}
+    SRCS ${SOURCES} main.c
     HDRS ${HEADERS}
     DEPS ${PKG_DEPENDS})
 
