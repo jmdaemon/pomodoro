@@ -1,7 +1,7 @@
 
 pomodoro_srcs = [ 'pomodoro.c', 'timer.c' ]
 
-pomodoro_bin = executable('pomodoro-bin',
+pomodoro_bin = executable('pomodoro',
   [ pomodoro_srcs, 'main.c' ],
   include_directories: inc,
   dependencies: [deps])
@@ -11,7 +11,7 @@ pomodoro = shared_library('pomodoro',
   include_directories: inc,
   dependencies: [deps])
 
-pomodoro_static = static_library('pomodoro_static',
+pomodoro_static = static_library('pomodoro',
   pomodoro_srcs,
   include_directories: inc,
   dependencies: [deps])
