@@ -1,5 +1,6 @@
-bytesize
+archive
 build
+_packages
 # Prerequisites
 *.d
 
