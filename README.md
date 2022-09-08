@@ -10,29 +10,100 @@ After every break, the program is paused and the user can resume the timer manua
 ## Usage
 
 ``` bash
-$ pomodoro
 Starting Pomodoro Timer
 Pomodoro #1
+Working for 4 seconds
+14:26 / 14:26 [##################################################]
+Taking a short break for 0 minutes
 Hit any key to resume the timer
 Pomodoro #2
+Working for 4 seconds
+14:26 / 14:26 [##################################################]
+Taking a short break for 0 minutes
 Hit any key to resume the timer
 Pomodoro #3
+Working for 4 seconds
+14:26 / 14:26 [##################################################]
+Taking a short break for 0 minutes
 Hit any key to resume the timer
 Pomodoro #4
+Working for 4 seconds
+14:26 / 14:26 [##################################################]
+Taking a longer break for 0 minutes
 Pomodoro Interval Complete
 ```
 
-## Building
+## Build
 
-Run `make release` to build the binary.
-The binary will be generated inside `build/release/bin/bytesize`.
+### CMake
 
-To run a clean build execute: `make clean` to remove the build artifacts.
+To build with CMake:
 
-## Installation
+``` bash
+cmake --preset gcc-release-unix-makefiles
+cd build/cmake/gcc-release-unix-makefiles
+make
+```
 
-Run `sudo make install` to install the program to `/usr/local/bin/`.
-If you want to change installation directory, run `PREFIX=/usr/bin/ make install`.
+Then to install pomodoro:
 
-To uninstall run `sudo make uninstall`.
+``` bash
+cd build/cmake/gcc-release-unix-makefiles
+cmake install .
+make install
+```
 
+from the binary directory.
+
+If you'd like to uninstall then run
+
+``` bash
+cmake uninstall .
+sudo make uninstall
+```
+
+### Make
+
+To build with pure make:
+
+``` bash
+make release bin
+```
+
+Then to install, run:
+
+``` bash
+sudo make install
+```
+
+from the root project directory.
+
+Run
+
+``` bash
+sudo make uninstall
+```
+
+to uninstall pomodoro.
+
+### Meson
+
+To build with meson:
+
+``` bash
+meson build/meson/release --buildtype release
+cd build/meson/release
+meson compile
+```
+
+To install with meson:
+
+``` bash
+sudo meson install
+```
+
+To uninstall
+
+``` bash
+sudo meson uninstall
+```
