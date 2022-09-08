@@ -1,7 +1,10 @@
+/*#include <stdio.h>*/
 #include "pomodoro.h"
+#include <wordexp.h>
+#include <linux/limits.h>
 
 bool str_empty(const char* str) {
-  bool is_empty = (str != NULL && (strlen(str) == 0)) ? true : false;
+  bool is_empty = ((str == NULL) || (*str == '\0')) ? true : false;
   return is_empty; 
 }
 
@@ -19,9 +22,28 @@ int main() {
     configfp = (char*) POMODORO_ENV;
   else
     configfp = (char*) POMODORO_DEFAULT_CONFIG_PATH;
+
+  /*printf("%s\n", configfp);*/
+
+  // Expand tilde
+  char* expanded;
+  /*if (configfp[0] == '~') {*/
+  asprintf(&expanded, "%s/%s", getenv("HOME"), configfp);
+    /*sprintf(expanded, "%s/%s", );*/
+    /*asprintf*/
+    
+    /*configfp = */
+  /*}*/
+  printf("expanded: %s\n", expanded);
   
-  if (file_exists(configfp)) 
-    config = parse_config(configfp, timer);
+  /*char actualpath [PATH_MAX+1];*/
+  /*char *ptr = realpath(configfp, actualpath);*/
+  /*printf("%s\n", ptr);*/
+
+  /*if (file_exists(ptr)) */
+  if (file_exists(expanded)) 
+    config = parse_config(expanded, &timer);
+    /*config = parse_config(configfp, timer);*/
   else
     config = NULL;
 

@@ -30,13 +30,18 @@ int set_period(toml_datum_t units, int value) {
   * The user config will override the timer's default settings
   * If no config file exists then this function will not execute at all
   * The lifetime of the config file is tied to the Pomodoro struct */
-toml_table_t* parse_config(char* configfp, Timer timer) {
+toml_table_t* parse_config(char* configfp, Timer *timer) {
   printf("Using custom config file: %s\n", configfp);
-  toml_table_t* config = read_config(configfp);
+  toml_table_t* pomodoro_config = read_config(configfp);
+  toml_table_t* pomodoro = toml_table_in(pomodoro_config, "pomodoro");
+  toml_datum_t  config = toml_string_in(pomodoro, "config");
+  toml_table_t* conf = toml_table_in(pomodoro_config, config.u.s);
 
-  toml_table_t* conf = toml_table_in(config, "config");
-  if (!conf)
-      error("Missing [config]", "");
+  if (!conf) {
+    fprintf(stderr, "ERROR: Missing [%s]\n", config.u.s);
+    free(config.u.s);
+    exit(1);
+  }
 
   toml_datum_t units = toml_string_in(conf, "units");
   if (!units.ok)
@@ -49,13 +54,13 @@ toml_table_t* parse_config(char* configfp, Timer timer) {
   // Set custom intervals for breaks
   toml_datum_t lbreak = toml_int_in(conf, "longbreak");
   if (lbreak.ok) {
-    timer.longbreak = set_period(units, lbreak.u.i);
+    timer->longbreak = set_period(units, lbreak.u.i);
     printf("Setting longbreak to: %ld\n", lbreak.u.i);
   }
 
   toml_datum_t sbreak = toml_int_in(conf, "shortbreak");
   if (sbreak.ok) {
-    timer.shortbreak = set_period(units, sbreak.u.i);
+    timer->shortbreak = set_period(units, sbreak.u.i);
     printf("Setting shortbreak to: %ld\n", sbreak.u.i);
   }
 
@@ -76,7 +81,7 @@ toml_table_t* parse_config(char* configfp, Timer timer) {
   
   // Set timer intervals
   for (int i = 0; i < 4; i++)
-    (timer.workintervals)[i] = intvals[i];
+    (timer->workintervals)[i] = intvals[i];
 
   /* Deallocate */
   free(units.u.s);
