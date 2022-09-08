@@ -41,7 +41,8 @@ static void error(const char* msg, const char* msg1);
 /* Parsing pomodoro config */
 toml_table_t* read_config(char* configfp);
 toml_table_t* parse_config(char* configfp, Timer *timer);
-int set_period(toml_datum_t units, int value);
+int set_period(const char* units, int value);
+void set_break(toml_table_t* conf, const char* break_type, const char* units, Timer* timer);
 
 void show_progress(Pomodoro *pd, int work_period);
 void *stopwatch(void *vargp);
