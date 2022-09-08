@@ -23,7 +23,7 @@ toml_table_t* read_config(char* configfp) {
 
 /** Sets the timer interval periods */
 int set_period(const char* units, int value) {
-  return ((strcmp(units, "minutes") == 0) ? value * 60 : value);
+  return (smatch(units, "minutes")) ? value * 60 : value;
 }
 
 /** Set the break lengths for the timer */
@@ -33,9 +33,9 @@ void set_break(toml_table_t* conf, const char* break_type, const char* units, Ti
     unsigned int break_length = set_period(units, toml_break.u.i);
     printf("Setting %s to: %ld %s\n", break_type, toml_break.u.i, units);
 
-    if (strcmp(break_type, "longbreak") == 0)
+    if (smatch(break_type, "longbreak"))
       timer->longbreak = break_length;
-    else if (strcmp(break_type, "shortbreak") == 0)
+    else if (smatch(break_type, "shortbreak"))
       timer->shortbreak = break_length;
   }
 }
@@ -83,9 +83,9 @@ toml_table_t* parse_config(char* configfp, Timer *timer) {
     int period = set_period(units, intval.u.i);
     intvals[i] = period;
 
-    if (strcmp(units, "minutes") == 0)
+    if (smatch(units, "minutes"))
       printf("Setting interval #%d to: %d %s\n", i + 1, period / 60, units);
-    else if (strcmp(units, "seconds") == 0)
+    else if (smatch(units, "seconds"))
       printf("Setting interval #%d to: %d %s\n", i + 1, period, units);
   }
   
