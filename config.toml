@@ -1,14 +1,19 @@
-[config]
+[pomodoro]
+config = "default"
+
+[default]
+shortbreak = 10
+longbreak = 30
+intervals = [
+20, 20, 20, 20
+]
+units = "minutes"
+
+# Test config for quick debugging
+[testing]
 shortbreak = 2
 longbreak = 2
 intervals = [
 4, 4, 4, 4,
 ]
 units = "seconds"
-
-#shortbreak = 10
-#longbreak = 30
-#intervals = [
-#0, 0, 0, 0
-#]
-#units = "minutes"
