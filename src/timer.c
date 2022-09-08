@@ -3,7 +3,7 @@
 int to_secs(int mins) { return mins * 60; }
 
 int workfor(Timer timer, int interval) {
-  return (timer.workintervals[interval]);
+  return (timer.intervals[interval]);
 }
 
 Timer init_timer(int sbreak, int lbreak) {
@@ -13,6 +13,6 @@ Timer init_timer(int sbreak, int lbreak) {
   };
 
   for (int i = 0; i < DEFAULT_NINTERVALS; i++)
-    (timer.workintervals)[i] = intervals[i];
+    (timer.intervals)[i] = intervals[i];
   return timer;
 }

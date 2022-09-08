@@ -14,8 +14,8 @@ extern "C" {
 typedef struct Timer {
   int shortbreak;
   int longbreak;
-  int interval_count;
-  int workintervals[4];
+  int interval;
+  int intervals[4];
 } Timer;
 
 int to_secs(int mins);

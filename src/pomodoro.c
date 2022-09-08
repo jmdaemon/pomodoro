@@ -91,7 +91,7 @@ toml_table_t* parse_config(char* configfp, Timer *timer) {
   
   // Set timer intervals
   for (int i = 0; i < 4; i++)
-    (timer->workintervals)[i] = intvals[i];
+    (timer->intervals)[i] = intvals[i];
 
   /* Deallocate */
   free(toml_units.u.s);
@@ -122,12 +122,12 @@ void *stopwatch(void *vargp) {
   Pomodoro *pd = vargp;
   Timer timer = pd->timer;
 
-  while (timer.interval_count <= 4) {
+  while (timer.interval <= 4) {
     /* Start our pomodoro */
-    printf("Pomodoro #%d\n", timer.interval_count);
+    printf("Pomodoro #%d\n", timer.interval);
 
     /* Work for some time */
-    time_t work_period = workfor(timer, timer.interval_count - 1);
+    time_t work_period = workfor(timer, timer.interval - 1);
     printf("Working for %ld seconds\n", work_period);
 
     /* Show a progress bar */
@@ -135,19 +135,19 @@ void *stopwatch(void *vargp) {
 
     /* Take a break */
     /* If we're on our final pomodoro */
-    if (timer.interval_count == 4) {
+    if (timer.interval == 4) {
       printf("Taking a longer break for %d minutes\n", (timer.longbreak)/60);
       sleep(timer.longbreak); /* Take a longer break */
-      timer.interval_count = 0;
+      timer.interval = 0;
       break; /* And end our pomodoro */
     } else {
       printf("Taking a short break for %d minutes\n", (timer.shortbreak)/60);
       sleep(timer.shortbreak); /* Take a shorter break */
     }
-    timer.interval_count++;
+    timer.interval++;
 
     /* Pause the program and wait for the user to continue */
-    if (timer.interval_count > 0) {
+    if (timer.interval > 0) {
       printf("Hit any key to resume the timer ");
       getchar();
     }
