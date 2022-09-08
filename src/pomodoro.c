@@ -118,7 +118,7 @@ void *stopwatch(void *vargp) {
 
     /* Work for some time */
     time_t work_period = workfor(timer, timer.interval_count - 1);
-    printf("Working for %ld\n", work_period);
+    printf("Working for %ld seconds\n", work_period);
 
     /* Show a progress bar */
     show_progress(pd, work_period);
@@ -147,5 +147,3 @@ void *stopwatch(void *vargp) {
   free(pd);
   return NULL;
 }
-
-
