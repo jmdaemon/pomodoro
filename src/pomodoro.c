@@ -32,6 +32,7 @@ void set_break(toml_table_t* conf, const char* break_type, const char* units, Ti
   if (toml_break.ok) {
     unsigned int break_length = set_period(units, toml_break.u.i);
     printf("Setting %s to: %ld %s\n", break_type, toml_break.u.i, units);
+
     if (strcmp(break_type, "longbreak") == 0)
       timer->longbreak = break_length;
     else if (strcmp(break_type, "shortbreak") == 0)
@@ -63,7 +64,7 @@ toml_table_t* parse_config(char* configfp, Timer *timer) {
   else
     units = toml_units.u.s;
 
-  printf("Using units as %s.", units);
+  printf("Using units as %s\n", units);
 
   // Set custom intervals for breaks
   set_break(conf, "longbreak", units, timer);
@@ -79,9 +80,13 @@ toml_table_t* parse_config(char* configfp, Timer *timer) {
   for (int i = 0; ; i++) {
     toml_datum_t intval = toml_int_at(intervals, i);
     if (!intval.ok) break;
-    int period = set_period(units, (int)intval.u.i);
+    int period = set_period(units, intval.u.i);
     intvals[i] = period;
-    printf("Setting interval #%d to: %d %s\n", i + 1, period, units);
+
+    if (strcmp(units, "minutes") == 0)
+      printf("Setting interval #%d to: %d %s\n", i + 1, period / 60, units);
+    else if (strcmp(units, "seconds") == 0)
+      printf("Setting interval #%d to: %d %s\n", i + 1, period, units);
   }
   
   // Set timer intervals
