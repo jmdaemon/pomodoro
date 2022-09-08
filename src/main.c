@@ -21,7 +21,7 @@ int main() {
     configfp = (char*) POMODORO_DEFAULT_CONFIG_PATH;
   
   if (file_exists(configfp)) 
-    config = parse_config(configfp, &timer);
+    config = parse_config(configfp, timer);
   else
     config = NULL;
 

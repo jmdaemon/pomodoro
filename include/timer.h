@@ -7,13 +7,9 @@
 extern "C" {
 #endif
 
-//#include <progressbar.h>
+#define DEFAULT_NINTERVALS 4
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <pthread.h>
 
 typedef struct Timer {
   int shortbreak;
@@ -23,8 +19,6 @@ typedef struct Timer {
 } Timer;
 
 int to_secs(int mins);
-void *stopwatch(void *vargp);
-
 int workfor(Timer timer, int interval);
 Timer init_timer(int sbreak, int lbreak);
 

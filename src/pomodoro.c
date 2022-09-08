@@ -5,24 +5,23 @@ static void error(const char* msg, const char* msg1) {
     exit(1);
 }
 
+/** Read and parse toml config file */
 toml_table_t* read_config(char* configfp) {
     FILE* file_contents;
     char errbuf[200];
 
-    // Read and parse toml config file
     file_contents = fopen(configfp, "r");
-    if (!file_contents) {
+    if (!file_contents)
       error("Cannot open config.toml - ", strerror(errno));
-    }
     toml_table_t* conf = toml_parse_file(file_contents, errbuf, sizeof(errbuf));
     fclose(file_contents);
 
-    if (!conf) {
+    if (!conf)
         error("cannot parse - ", errbuf);
-    }
     return conf;
 }
 
+/** Sets the timer interval periods */
 int set_period(toml_datum_t units, int value) {
   return ((strcmp(units.u.s, "minutes") == 0) ? value * 60 : value);
 }
@@ -31,34 +30,32 @@ int set_period(toml_datum_t units, int value) {
   * The user config will override the timer's default settings
   * If no config file exists then this function will not execute at all
   * The lifetime of the config file is tied to the Pomodoro struct */
-toml_table_t* parse_config(char* configfp, Timer *timer) {
+toml_table_t* parse_config(char* configfp, Timer timer) {
   printf("Using custom config file: %s\n", configfp);
   toml_table_t* config = read_config(configfp);
 
   toml_table_t* conf = toml_table_in(config, "config");
-  if (!conf) {
+  if (!conf)
       error("Missing [config]", "");
-  }
 
   toml_datum_t units = toml_string_in(conf, "units");
-  if (!units.ok) {
+  if (!units.ok)
       error("Cannot read units", "");
-  }
+
   printf("Units: %s\n", units.u.s);
-  if (strcmp(units.u.s, "minutes") == 0) {
+  if (strcmp(units.u.s, "minutes") == 0)
     printf("Using units as minutes.");
-  }
 
   // Set custom intervals for breaks
   toml_datum_t lbreak = toml_int_in(conf, "longbreak");
   if (lbreak.ok) {
-    timer->longbreak = set_period(units, lbreak.u.i);
+    timer.longbreak = set_period(units, lbreak.u.i);
     printf("Setting longbreak to: %ld\n", lbreak.u.i);
   }
 
   toml_datum_t sbreak = toml_int_in(conf, "shortbreak");
   if (sbreak.ok) {
-    timer->shortbreak = set_period(units, sbreak.u.i);
+    timer.shortbreak = set_period(units, sbreak.u.i);
     printf("Setting shortbreak to: %ld\n", sbreak.u.i);
   }
 
@@ -79,11 +76,10 @@ toml_table_t* parse_config(char* configfp, Timer *timer) {
   
   // Set timer intervals
   for (int i = 0; i < 4; i++)
-    (timer->workintervals)[i] = intvals[i];
+    (timer.workintervals)[i] = intvals[i];
 
   /* Deallocate */
   free(units.u.s);
-  /*toml_free(conf);*/
   return conf;
 }
 

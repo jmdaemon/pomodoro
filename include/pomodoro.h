@@ -12,6 +12,10 @@ extern "C" {
 
 /* Standard Library */
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
 
 /* Third Party Libraries */
 #include <file.h>
@@ -34,10 +38,11 @@ static void error(const char* msg, const char* msg1);
 
 /* Parsing pomodoro config */
 toml_table_t* read_config(char* configfp);
-toml_table_t* parse_config(char* configfp, Timer *timer);
+toml_table_t* parse_config(char* configfp, Timer timer);
 int set_period(toml_datum_t units, int value);
 
 void show_progress(Pomodoro *pd, int work_period);
+void *stopwatch(void *vargp);
 
 #ifdef __cplusplus
 }
